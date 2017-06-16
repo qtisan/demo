@@ -1,0 +1,23 @@
+{
+  "potato": "马铃薯",
+  "late_blight": "晚疫病",
+  "wetness": "湿润期",
+  "infect": "侵染",
+  "occur": "爆发",
+  "period": "代",
+  "times": "次",
+  "score": "积分",
+  "degree": "严重程度",
+  "humid": "湿度",
+  "temp": "温度",
+  "site": "站",
+  "villege": "村",
+  "district": "区",
+  "county": "县",
+  "city": "市",
+  "province": "省",
+  "area": "地区",
+  "growth": "生育期",
+  "solution_infect": "侵染方案",
+  "solution_score": "积分方案"
+}

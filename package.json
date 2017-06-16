@@ -1,0 +1,20 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "demo",
+  "main": "index.js",
+  "dependencies": {
+    "ioredis": "^3.1.1",
+    "mockjs": "^1.0.1-beta3",
+    "moment": "^2.18.1",
+    "request": "^2.81.0",
+    "superagent": "^3.5.2"
+  },
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "author": {
+    "name": "lennon",
+    "email": "lennon@imqx.com"
+  }
+}
