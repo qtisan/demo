@@ -1,51 +1,68 @@
-const logger = require('../../utils').logger;
+const {trigger, logger} = require('../../utils');
+const computeWetness = require('./compute_wetness').compute;
 
-const computeWetness = requrie('./wetness_compute');
+class Hook {
 
-function Hook(func) {
-  this.funcs = {
-    'defaults': func || () => {}
-  };
-  return this;
-}
-Hook.portotype.add = function (name, func) {
-  if (typeof name === 'string' && typeof func === 'function') {
-    this.funcs[name] && logger.warn(`the hook ${name} exists, and has been overrided.`);
-    this.funcs[name] = func;
-  }
-  return this;
-};
-Hook.pototype.remove = function (name) {
-  if (this.funcs[name]) {
-    delete this.funcs[name];
-  }
-  return this;
+	constructor(func) {
+		this.funcs = {
+			'defaults': func || (() => {})
+		};
+	}
+
+	add(name, func) {
+		if (typeof name === 'string' && typeof func === 'function') {
+			this.funcs[name] && logger.warn(`the hook ${name} exists, and has been overrided.`);
+			this.funcs[name] = func;
+		}
+		return this;
+	}
+
+	remove (name) {
+		if (this.funcs[name]) {
+			delete this.funcs[name];
+		}
+		return this;
+	}
 }
 
 const handleCompute = (objs, hooks) => {
   const { siteWetnessList, siteInfectList, siteOccurList } = objs;
   const {
     onStart,
-    onWetnessComputeStart,
-    onWetnessComputeEnd,
-    onWetnessSingleComputeStart,
-    onWetnessSingleComputeEnd,
-    onWetnessSingleHourComputeStart,
-    onWetnessSingleHourComputeInterrupt,
+	  onSingleSiteComputeStart,
+	  onSingleSiteComputeEnd,
+	  onWetnessComputeStart,
+	  onWetnessComputeInterrupt,
+	  onWetnessComputeEnd,
     onInfectComputeStart,
     onInfectComputeEnd,
-    onInfectSingleComputeStart,
-    onInfectSingleComputeEnd,
-    onOccurComputeStart,
-    onOccurComputeEnd,
-    onOccurSingleComputeStart,
-    onOccurSingleComputeEnd,
     onEnd
   } = hooks;
   return (weatherSiteList) => {
-    typeof onStart === 'function' && onStart(siteWetnessList, siteInfectList, siteOccurList);
+    trigger(onStart, { siteWetnessList, siteInfectList, siteOccurList });
 
-    typeof onEnd === 'function' && onEnd(siteWetnessList, siteInfectList, siteOccurList);
+	  weatherSiteList.site_list.forEach(site => {
+		  let siteId = site.site_id;
+		  let forecast = site.forecast;
+		  let siteWetness = siteWetnessList.getSite(siteId);
+
+		  trigger(onSingleSiteComputeStart, { weatherSite: site, siteWetness });
+		  forecast.forEach(weather => {
+			  computeWetness(weather, siteWetness, {
+				  onWetnessComputeStart,
+				  onWetnessComputeInterrupt: (...eventArgs) => {
+					  trigger.apply(this, [onWetnessComputeInterrupt, ...eventArgs]);
+					  let {weather1Hour, siteWetness} = eventArgs[0];
+						trigger(onInfectComputeStart, {weather1Hour, siteWetness});
+					  
+				  },
+				  onWetnessComputeEnd});
+		  });
+		  trigger(onSingleSiteComputeEnd, { weatherSite: site, siteWetness });
+
+	  });
+
+    trigger(onEnd, { siteWetnessList, siteInfectList, siteOccurList });
   }
 };
 
