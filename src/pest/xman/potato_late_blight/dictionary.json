@@ -11,7 +11,7 @@
   "humid": "湿度",
   "temp": "温度",
   "site": "站",
-  "villege": "村",
+  "village": "村",
   "district": "区",
   "county": "县",
   "city": "市",
@@ -19,5 +19,10 @@
   "area": "地区",
   "growth": "生育期",
   "solution_infect": "侵染方案",
-  "solution_score": "积分方案"
+  "solution_score": "积分方案",
+  "format": {
+    "time": "YYYYMMDDHHmmss",
+    "date": "YYYYMMDD",
+    "hour": "HH"
+  }
 }
