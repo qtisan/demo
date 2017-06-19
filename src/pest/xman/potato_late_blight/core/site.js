@@ -4,9 +4,10 @@ const EventEmitter = require('events');
 
 // 站点父类
 class Site extends EventEmitter {
-	constructor (id, currentTime, solution, growth) {
+	constructor (id, name, currentTime, solution, growth) {
 		super();
 		this.site_id = id;
+		this.site_name = name;
 		this.current_time = currentTime || timer.current();
 		this.solution = solution; // 取得该站的侵染方案
 		this.growth = growth;
@@ -35,6 +36,7 @@ class Site extends EventEmitter {
 class SiteWetness extends Site{
 	constructor ({
 		site_id,
+		site_name,
 		continuous, // 湿润期持续的01字符串，符合条件为1，不符合为0
 		humid_array, // 湿润期湿度数组，与continuous相对应
 		temp_avg, // 湿润期平均湿度
@@ -44,7 +46,7 @@ class SiteWetness extends Site{
 		site_infect, // 湿润期的侵染对象。有则表明当天已侵染，若当天再次侵染则更新严重程度；无则表明当天未侵染，若侵染则创建侵染对象。每天结束清空
 		current_time, // 当前的日期，YYYYMMDD
 	}) {
-		super(site_id, current_time);
+		super(site_id, site_name, current_time);
 		Object.assign(this, {continuous, humid_array, temp_avg, start_time, end_time, last_time, site_infect});
 	}
 	// 清空湿润期方法，湿润条件连续中断时调用
@@ -121,7 +123,7 @@ class SiteInfect extends Site {
 		score_total = 0, // 当前次的总积分，【在代对象中填充时更新】
 		current_time = siteWetness.current_time // 当前日期，YYYYMMDD
 	}) {
-		super(siteWetness.site_id, current_time, siteWetness.solution);
+		super(siteWetness.site_id, siteWetness.site_name, current_time, siteWetness.solution);
 		// TODO: quote crossly with SiteWetness, uncomment when save method rewrite.
 		// this.site_wetness = siteWetness;
 		Object.assign(this, {start_time, end_time, last_day, period, times, degree, score, score_total});
@@ -129,7 +131,7 @@ class SiteInfect extends Site {
 
 }
 
-// 站点侵染代类
+// 站点侵染代次类
 class SitePeriod extends Site {
 
 	constructor () {

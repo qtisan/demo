@@ -16,7 +16,7 @@ const {
 const hooks = require('./hooks');
 
 // 创建进程池，运行子进程
-const createProcessPool = handleProcessPool(`${__dirname}/single_compute.js`);
+const createProcessPool = handleProcessPool(`${__dirname}/child.js`);
 const processPool = createProcessPool();
 
 logger.info(`start ${processPool.count()} processes to compute.`);

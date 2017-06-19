@@ -18,8 +18,10 @@ const getSiteWetnessList = () => {
 	const siteWetnessList = new SiteWetnessList();
 	let index = count;
 	while(index--) {
+		let s = siteList[index];
 		let site = {
-			site_id: siteList[index].id,
+			site_id: s.id,
+			site_name: s.name,
 			continuous: Random.string('01', 100) + '000',
 			humid_array: [],
 			temp_avg: Random.integer(7, 36),

@@ -5,7 +5,7 @@
 
 const { fork } = require('child_process');
 
-const CPU_NUM = require('os').cpus().length * 2;
+const CPU_NUM = require('os').cpus().length;
 
 class ProcessPool {
 

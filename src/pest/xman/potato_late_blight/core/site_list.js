@@ -29,16 +29,9 @@ class SiteList {
 		return this.sites.count;
 	}
 
-	saveToFile (path) {
+	saveToFile (path, predicate) {
 		const sites = this.sites.map((site) => {
-			let pureObject = Object.assign({}, site);
-			delete pureObject.domain;
-			delete pureObject._events;
-			delete pureObject._eventsCount;
-			delete pureObject.solution.domain;
-			delete pureObject.solution._events;
-			delete pureObject.solution._eventsCount;
-			return pureObject;
+			return typeof predicate == 'function' ? predicate.apply(this, site) : Object.assign({}, site);
 		});
 		fs.writeFileSync(path, JSON.stringify({ count: sites.length, sites }));
 	}
@@ -50,6 +43,23 @@ class SiteWetnessList extends SiteList {
 
 	constructor () {
 		super();
+	}
+	
+	saveToFile (path) {
+		const predicate = (site) => {
+			return {
+				site_id: site.site_id,
+				continuous: site.continuous, 
+				humid_array: site.humid_array, 
+				temp_avg: site.temp_avg, 
+				start_time: site.start_time,
+				end_time: site.end_time, 
+				last_time: site.last_time,
+				site_infect: site.site_infect, 
+				current_time: site.current_time
+			}
+		};
+		super.saveToFile(path, predicate);
 	}
 
 	saveToCache () {
