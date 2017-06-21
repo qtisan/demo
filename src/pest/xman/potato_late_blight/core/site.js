@@ -62,7 +62,7 @@ class SiteWetness extends Site{
 		});
 	}
 	// 判断是否中断润湿期，并计算侵染情况
-	judgeInterrupt (weather1Hour) {
+	judgeInterrupt (weather1Hour, drop) {
 		// TODO: is the time continuously ?
 		let solution = this.solution;
 		let interrupt = (() => { // 取得中断条件连续的0数
@@ -78,8 +78,10 @@ class SiteWetness extends Site{
 			this.start_time = weather1Hour.time;
 			this.last_time -= 3;
 			const that = this.clone();
+			typeof drop == 'function' && drop.call(this, that);
 			this.emit('wetness.computeInterrupt', { weather1Hour, siteWetness: that }); // 符合条件的回调事件
 			this.clear();
+			return this.skip('wetness interrupt.');
 		}
 		else { // 不符合中断条件
 			this.emit('wetness.computeNotInterrupt', { weather1Hour, siteWetness: this }); // 不符合条件的回调事件
@@ -90,11 +92,12 @@ class SiteWetness extends Site{
 			}
 			else {
 				this.emit('infect.notInGrowth', { weather1Hour, siteWetness: this });
+				return this.skip('not in growth.');
 			}
 		}
 	}
 	// 【主方法】，每小时调用时，更新当前湿润期对象数据
-	update (weather1Hour) {
+	update (weather1Hour, drop) {
 		let last = this.last_time;
 		let humid = weather1Hour.humid;
 		this.emit('wetness.computeStart', {weather1Hour, siteWetness: this});
@@ -104,7 +107,16 @@ class SiteWetness extends Site{
 		this.temp_avg = ((this.temp_avg * last + weather1Hour.temp) / (last + 1)).toFixed(1);
 		this.last_time += 1;
 		// 判断是否中断润湿期，若未中断，则计算侵染情况
-		return this.judgeInterrupt(weather1Hour);
+		return this.judgeInterrupt(weather1Hour, drop);
+	}
+	skip (note) {
+		return {
+			site_id: this.site_id,
+			site_name: this.site_name,
+			current_time: this.current_time,
+			skip: true,
+			note: note || 'it is skipped.'
+		};
 	}
 
 }
@@ -118,11 +130,11 @@ class SiteInfect extends Site {
 		last_day = 1, // 侵染期持续天数，【在代对象中填充时更新】
 		period = 0, // 当前代，【在代对象中填充时更新】
 		times = 0, // 当前次，【在代对象中填充时更新】
-		degree = 3, // 当前侵染的严重程度，创建时需覆盖
+		degree = 0, // 当前侵染的严重程度，创建时需覆盖
 		score = 0, // 当天的积分，【在代对象中填充时更新】
 		score_total = 0, // 当前次的总积分，【在代对象中填充时更新】
 		current_time = siteWetness.current_time // 当前日期，YYYYMMDD
-	}) {
+	} = siteWetness) {
 		super(siteWetness.site_id, siteWetness.site_name, current_time, siteWetness.solution);
 		// TODO: quote crossly with SiteWetness, uncomment when save method rewrite.
 		// this.site_wetness = siteWetness;

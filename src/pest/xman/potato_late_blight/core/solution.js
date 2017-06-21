@@ -21,7 +21,7 @@ class Solution extends EventEmitter {
 	}
 	
 	judgeInfect (siteWetness) {
-		let siteInfect;
+		let siteInfect = new SiteInfect(siteWetness, {});
 		if (this.infect_solution) {
 			const last_time = siteWetness.last_time;
 			// 达到计算要求的最小持续时长时，查找方案中符合平均温度的持续时长行

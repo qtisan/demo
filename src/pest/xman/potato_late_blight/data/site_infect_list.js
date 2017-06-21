@@ -11,16 +11,16 @@ const count = Random.integer(1, 726);
 
 const getSiteInfectList = () => {
 
-	logger.start('generate-726-sites-infect-data');
+	logger.start('generate-726-sites-infect-data', false);
 
-	// TODO: fetch from redis or get data from mysql and recompute;
+	// TODO: fetch from redis or get data from database and recompute;
 	// =============================================================
-	const siteInfectList = new SiteInfectList();
+	const collection = [];
 
 	// =============================================================
 
 	logger.end('generate-726-sites-infect-data');
-	return siteInfectList;
+	return SiteInfectList.fromData(collection);
 };
 
 module.exports = getSiteInfectList;

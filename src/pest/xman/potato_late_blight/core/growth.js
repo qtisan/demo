@@ -8,7 +8,7 @@ class Growth {
 
 	constructor ({ site_id, seasons }, time) {
 		Object.assign(this, { site_id, seasons });
-		time && this.refresh(time);
+		this.refresh(time || timer.current());
 	}
 
 	refresh (time) {

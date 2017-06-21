@@ -12,16 +12,27 @@ module.exports = {
 		logger.start('compute-sites-in-future-240-hours', 'compute started...');
 	},
 	onSingleSiteComputeStart: ({ siteWeather }) => {
-		logger.start(`site-${siteWeather.site_id}-compute`, false);
+		logger.start(`site[${siteWeather.site_id}]-compute`, false);
 	},
 	onSingleSiteComputeEnd: ({ siteWeather }) => {
-		logger.end(`site-${siteWeather.site_id}-compute`);
+		logger.end(`site[${siteWeather.site_id}]-compute`);
+	},
+	onProcessChildReady: ({ data, batch, child }) => {
+		// logger.info(`[hook]-- process ready, pid:${child.pid}, batch:${batch.id}, site:${data.siteWetnessList.length}`);
+	},
+	onProcessStartSingle: ({ data, child }) => {
+		// logger.info(`[hook]-- process start single, pid:${child.pid}, site:${data.site_id}`);
+		// logger.start(`---- [child-${child.pid}]site-${data.site_id}-compute`, false);
+	},
+	onProcessFinishSingle: ({ data, child }) => {
+		// logger.info(`[hook]-- process finish single, pid:${child.pid}, site:${data.siteWeather.site_id}`);
+		// logger.end(`---- [child-${child.pid}]site-${data.siteWeather.site_id}-compute`);
 	},
 	onEnd: ({ siteWetnessList, siteInfectList },
 		{ solutionCollection, growthCollection }) => {
 		logger.end('compute-sites-in-future-240-hours', 'compute finished.');
 
-		logger.info('saving the test result...');
+		logger.info('[customer]saving the test result...');
 		let wetnessFile = join(__dirname, '../../test/sites_wetness.json'),
 			infectFile = join(__dirname, '../../test/sites_infect.json');
 		siteWetnessList.saveToFile(wetnessFile);

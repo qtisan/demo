@@ -5,63 +5,52 @@ const { Site, SiteWetness, SiteInfect, SitePeriod } = require('./site');
 const { SiteList, SiteWetnessList, SiteInfectList } = require('./site_list');
 const Growth = require('./growth');
 const Solution = require('./solution');
-const { handleProcessPool } = require('./process_pool');
+const { handleProcessPool } = require('./processes');
 
 function handleCompute (
 	{ siteWetnessList, siteInfectList },
 	{ solutionCollection, growthCollection },
 	{
 		onStart = noop,
-		onSingleSiteComputeStart = noop,
-		onSingleSiteComputeEnd = noop,
 
-		onWetnessComputeStart = noop,
-		onWetnessComputeInterrupt = noop,
-		onWetnessComputeNotInterrupt = noop,
-		onInfectNotInGrowth = noop,
-
-		onInfectComputeStart = noop,
-		onInfectSolutionNotExist = noop,
-		onInfectTempAvgMatched = noop,
-		onInfectSuccess = noop,
-		onInfectTempAvgNotMatched = noop,
-		onInfectComputeEnd = noop,
-
-		onDayStart = noop,
-		onDayEnd = noop,
+		onProcessChildError = noop,
+		onProcessChildReady = noop,
+		onProcessStartBatch = noop,
+		onProcessFinishBatch = noop,
+		onProcessStartSingle = noop,
+		onProcessFinishSingle = noop,
 
 		onEnd = noop
 	},
 	{ processPool }) {
 
-	// 挂载侵染方案计算事件
-	solutionCollection.forEach(solution => {
-		solution.on('infect.computeStart', onInfectComputeStart);
-		solution.on('infect.solutionNotExist', onInfectSolutionNotExist);
-		solution.on('infect.tempAvgMatched', onInfectTempAvgMatched);
-		solution.on('infect.success', onInfectSuccess);
-		solution.on('infect.tempAvgNotMatched', onInfectTempAvgNotMatched);
-		solution.on('infect.computeEnd', onInfectComputeEnd);
-	});
-	// 挂载湿润期计算事件
-	siteWetnessList.forEach(siteWetness => {
-		siteWetness.on('wetness.computeStart', onWetnessComputeStart);
-		siteWetness.on('wetness.computeInterrupt', onWetnessComputeInterrupt);
-		siteWetness.on('wetness.computeNotInterrupt', onWetnessComputeNotInterrupt);
-		siteWetness.on('infect.notInGrowth', onInfectNotInGrowth);
-	});
+
+	processPool.on('errorChild', onProcessChildError);
+	processPool.on('readyChild', onProcessChildReady);
+	processPool.on('startBatch', onProcessStartBatch);
+	processPool.on('finishBatch', onProcessFinishBatch);
+	processPool.on('startSingle', onProcessStartSingle);
+	processPool.on('finishSingle', onProcessFinishSingle);
 
   return (siteWeatherList) => {
-    trigger(onStart, { siteWetnessList, siteInfectList },
-	    { solutionCollection, growthCollection });
 
-		// 循环调度
-	  siteWeatherList.forEach((site, index) => {
-		  processPool.dispatch({ site }, index);
+		// 创建批量进程消息任务
+	  let batchId = `infect-computation-${new Date().getTime()}`;
+	  processPool.on('startBatch', (batch) => {
+		  batch.id == batchId && trigger(onStart, { siteWetnessList, siteInfectList },
+			  { solutionCollection, growthCollection });
 	  });
+	  processPool.on('finishBatch', (batch) => {
+		  batch.id == batchId && trigger(onEnd, { siteWetnessList, siteInfectList },
+			  { solutionCollection, growthCollection });
+	  });
+	  processPool.createBatch(siteWeatherList, {
+		  siteWetnessList: siteWetnessList.serialize(),
+		  siteInfectList: siteInfectList.serialize(),
+		  solutionCollection, growthCollection
+	  }, batchId);
+	  processPool.isFree() && processPool.runBatch();
 
-    trigger(onEnd, { siteWetnessList, siteInfectList },
-	    { solutionCollection, growthCollection });
   }
 }
 
@@ -87,7 +76,7 @@ function handleSingleCompute ({
 	onSingleSiteComputeStart,
 	onSingleSiteComputeEnd
 }) {
-	return ({ site }) => {
+	return ({ site }, callback) => {
 
 		let siteId = site.site_id;
 		let forecast = site.forecast;
@@ -98,16 +87,19 @@ function handleSingleCompute ({
 		trigger(onSingleSiteComputeStart, { siteWeather: site, siteWetness });
 		forecast.forEach(weather1Hour => {
 
-			// TODO: change to date updated.
 			siteInfectList.refreshCurrentTime(weather1Hour.time); // 更新侵染列表的当前日期
 			siteWetness.updateGrowth(getGrowth, weather1Hour.time); // 更新生育期数据
-
-			const siteInfect = siteWetness.update(weather1Hour); // 更新湿润期侵染数据
+			const siteInfect = siteWetness.update(weather1Hour, (siteWetness) => {
+				// dropped to history.
+			}); // 更新湿润期侵染数据
 			siteInfectList.updateSite(siteInfect); // 更新侵染站点列表
 
 			// TODO: continue to compute.
+
 		});
-		trigger(onSingleSiteComputeEnd, { siteWeather: site, siteWetness });
+		callback.call(process, { siteWetness, siteInfectList });
+
+		trigger(onSingleSiteComputeEnd, { siteWeather: site, siteWetness, siteInfectList });
 
 	};
 }

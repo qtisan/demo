@@ -9,16 +9,11 @@ const siteList = require('./site_list');
 
 const getSiteWetnessList = () => {
 
-	const count = 726;
-
-	logger.start('generate-726-sites-wetness-data');
+	logger.start('generate-726-sites-wetness-data', false);
 
 	// TODO: fetch from redis or get data from mysql and recompute
 	// ============================================================
-	const siteWetnessList = new SiteWetnessList();
-	let index = count;
-	while(index--) {
-		let s = siteList[index];
+	const collection = siteList.map(s => {
 		let site = {
 			site_id: s.id,
 			site_name: s.name,
@@ -42,12 +37,13 @@ const getSiteWetnessList = () => {
 		}
 		site.start_time = moment().subtract(length-1, 'hour').format('YYYYMMDDHHmmss');
 		site.last_time = length;
-		siteWetnessList.add(new SiteWetness(site));
-	}
+		return site;
+	});
+
 	// ============================================================
 
 	logger.end('generate-726-sites-wetness-data');
-	return siteWetnessList;
+	return SiteWetnessList.fromData(collection);
 };
 
 module.exports = getSiteWetnessList;

@@ -3,17 +3,17 @@ const moment = require('moment');
 
 // TODO: replace logger plugin with log server.
 const logger = {
-  info: console.info,
-  warn: console.warn,
-  error: console.error,
-  log: console.log,
+  info: (text) => console.info(withPid(text)),
+  warn: (text) => console.warn(withPid(text)),
+  error:(text) => console.error(withPid(text)),
+  log: (text) => console.log(withPid(text)),
   start: (name, text) => {
 	  text !== false && console.info(`${name} process start...`);
-	  console.time(name);
+	  console.time(withPid(name));
 	  text && console.info(text);
   },
   end: (name, text) => {
-	  console.timeEnd(name);
+	  console.timeEnd(withPid(name));
 	  text && console.info(text);
   }
 };
@@ -32,7 +32,7 @@ const timer = {
 		let [start, end] = span.split('-');
 		return moment(translateDatetimeFromString(time)).isBetween(start, end, null, '[]');
 	},
-	timeToDate: (time) => moment(time).format(defaultFormatDate),
+	timeToDate: (time) => moment(translateDatetimeFromString(time)).format(defaultFormatDate),
 	dateToTime: (date) => moment(date).format(defaultFormat),
   sameHour: (time1, time2) => time1.slice(0, 10) == time2.slice(0, 10),
   sameDay: (time1, time2) => time1.slice(0, 8) == time2.slice(0, 8)
@@ -43,6 +43,9 @@ function translateDatetimeFromString(dateString) {
 		result = [ dateString.slice(0, 8), dateString.slice(8) ].join(' ');
 	}
 	return result;
+}
+function withPid (text) {
+	return `[${process.pid}]-${text}`;
 }
 
 const trigger = (func, ...args) => typeof func === 'function' && func.apply(this, args);
