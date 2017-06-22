@@ -30,6 +30,15 @@ class Site extends EventEmitter {
 		Object.assign(that, this);
 		return that;
 	}
+	skip (note) {
+		return {
+			site_id: this.site_id,
+			site_name: this.site_name,
+			current_time: this.current_time,
+			skip: true,
+			note: note || 'it is skipped.'
+		};
+	}
 }
 
 // 湿润期类
@@ -45,8 +54,10 @@ class SiteWetness extends Site{
 		last_time, // 湿润期持续小时数
 		site_infect, // 湿润期的侵染对象。有则表明当天已侵染，若当天再次侵染则更新严重程度；无则表明当天未侵染，若侵染则创建侵染对象。每天结束清空
 		current_time, // 当前的日期，YYYYMMDD
+		solution,
+		growth
 	}) {
-		super(site_id, site_name, current_time);
+		super(site_id, site_name, current_time, solution, growth);
 		Object.assign(this, {continuous, humid_array, temp_avg, start_time, end_time, last_time, site_infect});
 	}
 	// 清空湿润期方法，湿润条件连续中断时调用
@@ -74,7 +85,7 @@ class SiteWetness extends Site{
 		})();
 		// 最近一小时湿度获得之后，是否满足中断湿润期条件
 		if (this.continuous.indexOf(interrupt) != -1 || this.continuous[0] == '0') {
-			this.end_time = timer.earlier(3, weather1Hour.time);
+			this.end_time = timer.earlier(interrupt, weather1Hour.time);
 			this.start_time = weather1Hour.time;
 			this.last_time -= 3;
 			const that = this.clone();
@@ -101,22 +112,13 @@ class SiteWetness extends Site{
 		let last = this.last_time;
 		let humid = weather1Hour.humid;
 		this.emit('wetness.computeStart', {weather1Hour, siteWetness: this});
-		this.current_time = timer.current(weather1Hour.time); // TODO: should be execute per day.
+		this.current_time = timer.current(weather1Hour.time);
 		this.continuous += (humid >= this.solution.humid_bound ? '1' : '0');
 		this.humid_array.push(humid);
 		this.temp_avg = ((this.temp_avg * last + weather1Hour.temp) / (last + 1)).toFixed(1);
 		this.last_time += 1;
 		// 判断是否中断润湿期，若未中断，则计算侵染情况
 		return this.judgeInterrupt(weather1Hour, drop);
-	}
-	skip (note) {
-		return {
-			site_id: this.site_id,
-			site_name: this.site_name,
-			current_time: this.current_time,
-			skip: true,
-			note: note || 'it is skipped.'
-		};
 	}
 
 }
@@ -136,8 +138,7 @@ class SiteInfect extends Site {
 		current_time = siteWetness.current_time // 当前日期，YYYYMMDD
 	} = siteWetness) {
 		super(siteWetness.site_id, siteWetness.site_name, current_time, siteWetness.solution);
-		// TODO: quote crossly with SiteWetness, uncomment when save method rewrite.
-		// this.site_wetness = siteWetness;
+		this.site_wetness = Object.assign({}, siteWetness);
 		Object.assign(this, {start_time, end_time, last_day, period, times, degree, score, score_total});
 	}
 

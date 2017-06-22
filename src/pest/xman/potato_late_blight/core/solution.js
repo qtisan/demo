@@ -53,14 +53,19 @@ class Solution extends EventEmitter {
 					}
 					this.emit('infect.success', {siteWetness, siteInfect, solution: this});
 				}
+				else {
+					siteInfect = siteInfect.skip('degree is 0.');
+				}
 			}
 			else {
+				siteInfect = siteInfect.skip('temperature not correct or time lasts haven\'t met the least.');
 				this.emit('infect.tempAvgNotMatched', {siteWetness, last_time, solution: this});
 			}
 			// 侵染计算结束后的回调事件
 			this.emit('infect.computeEnd', {siteWetness, siteInfect, solution: this});
 		}
 		else {
+			siteInfect = siteInfect.skip('solution not exist.');
 			this.emit('infect.solutionNotExist', {siteWetness, solution: this});
 		}
 		return siteInfect;

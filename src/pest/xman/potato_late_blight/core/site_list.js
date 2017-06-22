@@ -2,8 +2,7 @@
  * Created by qtisa on 2017/6/18.
  */
 
-const { logger, timer } = require('../../../utils');
-const fs = require('fs');
+const { XPLBLogger: logger, timer, writeFileSync } = require('../../../utils');
 
 const { Site, SiteWetness, SiteInfect } = require('./site');
 
@@ -28,6 +27,7 @@ class SiteList {
 
 	add (site) {
 		this.sites.push(site);
+		return this;
 	}
 
 	forEach(predicate) {
@@ -45,7 +45,7 @@ class SiteList {
 	}
 	saveToFile (path) {
 		const sites = this.serialize();
-		fs.writeFileSync(path, JSON.stringify({ count: this.count(), sites }));
+		writeFileSync(path, JSON.stringify({ count: this.count(), sites }));
 	}
 
 }
@@ -54,7 +54,7 @@ class SiteList {
 class SiteWetnessList extends SiteList {
 
 	constructor (collection) {
-		super(collection.map(site => new SiteWetness(site)));
+		super(collection && collection.map(site => new SiteWetness(site)));
 	}
 
 	static fromData (collection) {
@@ -79,6 +79,25 @@ class SiteWetnessList extends SiteList {
 		};
 		return super.serialize(predicate, json);
 	}
+	
+	updateSite (siteWetness, override) {
+		const site = this.sites.find(site => site.site_id == siteWetness.site_id);
+		if (site) {
+			override && Object.assign(site, siteWetness);
+			override || siteWetness.current_time >= site.current_time && Object.assign(site, siteWetness);
+		}
+		else {
+			this.add(siteWetness);
+		}
+	}
+
+	clone () {
+		return new SiteWetnessList(this.sites);
+	}
+
+	combine (that) {
+		that.sites.forEach(site => this.updateSite(site));
+	}
 
 	saveToCache () {
 		logger.info(`saved site wetness list to cache.`);
@@ -89,11 +108,11 @@ class SiteWetnessList extends SiteList {
 	// TODO: add wetness list features.
 }
 
-
+let n = 0, m=0, l=0, p=0;
 class SiteInfectList extends SiteList{
 
 	constructor (collection) {
-		super(collection.map(({siteId, siteName, currentInfect, forecastInfects}) => {
+		super(collection && collection.map(({siteId, siteName, currentInfect, forecastInfects}) => {
 			return {
 				site_id: siteId,
 				site_name: siteName,
@@ -109,6 +128,7 @@ class SiteInfectList extends SiteList{
 				})()
 			}
 		}));
+		this.current_time = timer.current();
 	}
 
 	static fromData (collection, time) {
@@ -127,6 +147,7 @@ class SiteInfectList extends SiteList{
 			const current_date = timer.timeToDate(current_time);
 			const lastSiteInfect = this.getSite(siteId);
 			const sameDay = timer.sameDay(current_time, this.current_time);
+			// console.log(`si-ct:${current_time}, this-ct:${this.current_time}`);
 			if (!lastSiteInfect) {
 				this.add({
 					site_id: siteInfect.site_id,
@@ -134,23 +155,26 @@ class SiteInfectList extends SiteList{
 					current: sameDay && siteInfect,
 					forecast: sameDay ? {} : {[current_date]: siteInfect}
 				});
+				// p++;
 			}
 			else if (sameDay) {
+				// l ++;
 				if (!lastSiteInfect.current.skip) {
 					lastSiteInfect.current.current_time = siteInfect.current_time;
 					lastSiteInfect.current.degree = siteInfect.degree;
 				}
 			}
 			else if (lastSiteInfect.forecast[current_date]) {
-				if (!lastSiteInfect.current.skip) {
-					lastSiteInfect.forecast[current_date].current_time = siteInfect.current_time;
-					lastSiteInfect.forecast[current_date].degree = siteInfect.degree;
-				}
+				// m ++;
+				lastSiteInfect.forecast[current_date].current_time = siteInfect.current_time;
+				lastSiteInfect.forecast[current_date].degree = siteInfect.degree;
 			}
 			else {
+				// n ++;
 				lastSiteInfect.forecast[current_date] = siteInfect;
 			}
 		}
+		// console.log(`${l}+${m}+${n}+${p}=${l+m+n+p}`);
 	}
 
 	serialize (json) {
@@ -167,14 +191,16 @@ class SiteInfectList extends SiteList{
 				score: site.score,
 				score_total: site.score_total,
 				current_time: site.current_time,
-				growth: site.growth
+				growth: site.growth,
+				skip: site.skip,
+				note: site.note
 			}
 		};
 		const predicate = (site) => {
 			let forecast = site.forecast, _forecast = {};
 			for (let prop in forecast) {
 				if (forecast.hasOwnProperty(prop)) {
-					_forecast[key] = sitePredicate(value);
+					_forecast[prop] = sitePredicate(forecast[prop]);
 				}
 			}
 			return {
@@ -187,8 +213,8 @@ class SiteInfectList extends SiteList{
 		return super.serialize(predicate, json);
 	}
 
-	combine (another) {
-
+	combine (that) {
+		that.sites.forEach(site => this.add(site));
 	}
 
 	// 清空列表，一个新的预测日开始时执行

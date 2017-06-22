@@ -2,15 +2,14 @@
  * Created by qtisa on 2017/6/19.
  */
 
-const { logger } = require('../../../utils');
+const { XPLBLogger: logger } = require('../../../utils');
 const Random = require('mockjs').Random;
 const EventEmitter = require('events');
 const { fork } = require('child_process');
+const PROCESS_NUM = require('../config').get('processNum');
 
-const CPU_NUM = require('os').cpus().length;
-
-// payload sent to child process: {command, message}, command: initial/execute/resume
-// payload replied from child process: {status, message}, status: ready/error/finish/halt
+// payload sent to child process: {command, message}, command: initial/execute/resume/converge
+// payload replied from child process: {status, message}, status: ready/error/finish/halt/warn/report
 class ProcessPool extends EventEmitter {
 
 	constructor (script, { continuously }) {
@@ -28,40 +27,48 @@ class ProcessPool extends EventEmitter {
 			readyProcessCount: 0,
 			errors: [],
 			finished: [],
+			result: [],
 			warns: []
 		};
 		this.finishedBatches = [];
-		let i = CPU_NUM;
+		let i = PROCESS_NUM;
 		while (i--) {
 			let child = fork(script);
 			this.pool.push(child);
 			const that = this;
 			child.on('message', function ({status, data}) {
+				const payload = {data, batch: that.currentBatch, child: this};
 				switch (status) {
 					case 'ready':
 						logger.info(`* process[${this.pid}] ready for dispatching task...`);
-						that.emit(`readyChild`, {data, batch: that.currentBatch, child: this});
+						that.emit(`childReady`, payload);
 						that.dispatch(this);
 						break;
 					case 'error':
-						that.emit(`errorChild`, {data, batch: that.currentBatch, child: this});
+						that.emit(`childError`, payload);
 						that.currentBatch.errors.push(data);
 						break;
 					case 'finish':
-						that.judgeAndFinishBatch(data, this);
+						that.finish(data, this);
 						break;
 					case 'warn':
-						that.emit(`warnChild`, {data, batch: that.currentBatch, child: this});
+						that.emit(`childWarn`, payload);
 						that.currentBatch.warns.push(data);
 						break;
 					case 'halt':
-						that.emit(`haltChild`, {data, batch: that.currentBatch, child: this});
+						that.emit(`childHalt`, payload);
 						that.handleHalt(data, (message) => {
 							this.send({command: 'resume', message: message});
 						});
 						break;
+					case 'report':
+						that.emit('childReport', payload);
+						let result = that.currentBatch.result;
+						result.push({pid: this.pid, data});
+						result.length == that.count() && that.finishBatch();
+						break;
 					default:
-						console.log('not recognize message.');
+						logger.warn('not recognize message.');
 						break;
 				}
 			});
@@ -77,6 +84,10 @@ class ProcessPool extends EventEmitter {
 		return this.status == 'free';
 	}
 
+	count () {
+		return this.pool.length;
+	}
+
 	execute (message, child) {
 		const num = this.pool.length;
 		let i = Number.isInteger(child) ? child : Math.floor(Math.random() * num);
@@ -88,13 +99,9 @@ class ProcessPool extends EventEmitter {
 		let collection = this.currentBatch.collection;
 		if (collection.length > this.currentBatch.index) {
 			const message = {el: collection[this.currentBatch.index ++]};
-			this.emit('startSingle', {data: message.el, child, index: this.currentBatch.index});
+			this.emit('singleStart', {data: message.el, batch: this.currentBatch, child});
 			this.execute(message, child);
 		}
-	}
-
-	count () {
-		return this.pool.length;
 	}
 
 	createBatch (collection, data, id) {
@@ -108,31 +115,36 @@ class ProcessPool extends EventEmitter {
 			let batch = this.queue.shift();
 			let initialData = batch.data;
 			Object.assign(this.currentBatch, {
-				id: batch.id, count: batch.collection.length, readyProcessCount: 0, index: 0,
+				id: batch.id, count: batch.collection.length, readyProcessCount: 0, index: 0, result: [],
 				errors: [], finished: [], warns: [], data: initialData, collection: batch.collection
 			});
-			this.emit('startBatch', this.currentBatch);
+			initialData.batchId = batch.batchId;
+			this.emit('batchStart', {initialData, batch: this.currentBatch});
 			this.pool.forEach(child => child.send({command: 'initial', message: initialData}));
 		}
 	}
 
-	judgeAndFinishBatch (data, child) {
+	finish (data, child) {
 		this.currentBatch.finished.push(data);
-		this.emit('finishSingle', {data, batch: this.currentBatch, child});
+		this.emit('singleFinish', {data, batch: this.currentBatch, child});
 		let finishedCount = this.currentBatch.finished.length + this.currentBatch.errors.length;
 		const finished = finishedCount == this.currentBatch.count;
 		logger.info(`${finishedCount}/${this.currentBatch.count} finished.`);
 		if (finished) {
-			logger.info(`batch[${this.currentBatch.id}] with ${this.currentBatch.count} tasks finished.`);
-			this.status = 'free';
-			this.emit('finishBatch', this.currentBatch);
-			this.finishedBatches.push(this.currentBatch);
-			this.options.continuously && this.runBatch();
+			logger.info(`batch[${this.currentBatch.id}] with ${this.currentBatch.count} tasks must be finished, now converging...`);
+			this.pool.forEach(c => c.send({command: 'converge'}));
 		}
 		else {
 			this.dispatch(child);
 		}
 		return finished;
+	}
+
+	finishBatch () {
+		this.emit('batchFinish', {result: this.currentBatch.result, batch: this.currentBatch});
+		this.finishedBatches.push(this.currentBatch);
+		this.status = 'free';
+		this.options.continuously && this.runBatch();
 	}
 
 	saveToCache () {}

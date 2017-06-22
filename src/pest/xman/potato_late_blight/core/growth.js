@@ -6,15 +6,16 @@ const { timer } = require('../../../utils');
 
 class Growth {
 
-	constructor ({ site_id, seasons }, time) {
+	constructor ({ site_id, seasons } = {}, time = timer.current()) {
 		Object.assign(this, { site_id, seasons });
-		this.refresh(time || timer.current());
+		this.refresh(time);
 	}
 
-	refresh (time) {
+	refresh (time = timer.current()) {
 		let seasons = this.seasons;
-		let current = time || timer.current();
-		let currentSpan = null, seasonIndex;
+		let current = time;
+		let currentSpan = null;
+		let seasonIndex;
 		seasons.find((season, index) => {
 			currentSpan = season.find(span => timer.between(current, span.time));
 			if (currentSpan) {

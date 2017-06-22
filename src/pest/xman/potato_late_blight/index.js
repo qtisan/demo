@@ -1,10 +1,10 @@
 
-
-const { logger } = require('../../utils');
+const { XPLBLogger: logger } = require('../../utils');
 const fs = require('fs');
 const path = require('path');
 
 const {
+	SiteWetnessList,
 	handleCompute,
 	handleProcessPool
 } = require('./core');
@@ -22,13 +22,14 @@ const {
 	siteWeatherList, siteWetnessList, siteInfectList,
 	solutionCollection, growthCollection
 } = require('./data');
-
+const completedSiteWetnessList = new SiteWetnessList();
+const currentSiteWetnessList = new SiteWetnessList(); //siteWeatherList.clone();
 
 const compute = handleCompute(
-  { siteWetnessList, siteInfectList },
+  { siteWetnessList, siteInfectList, completedSiteWetnessList, currentSiteWetnessList },
 	{ solutionCollection, growthCollection }, hooks,
 	{ processPool });
 
-console.log(`starting ${siteWeatherList.length} sites 240 hours in future computation...`);
+logger.info(`starting ${siteWeatherList.length} sites 240 hours in future computation...`);
 compute(siteWeatherList);
 

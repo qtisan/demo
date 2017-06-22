@@ -1,6 +1,6 @@
 
 const Random = require('mockjs').Random;
-const { logger, timer } = require('../../../utils');
+const { XPLBLogger: logger, timer } = require('../../../utils');
 
 const siteList = require('./site_list');
 

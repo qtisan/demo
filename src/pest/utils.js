@@ -1,41 +1,33 @@
 
 const moment = require('moment');
+const fs = require('fs');
+const { join, sep, dirname } = require('path');
 
-// TODO: replace logger plugin with log server.
-const logger = {
-  info: (text) => console.info(withPid(text)),
-  warn: (text) => console.warn(withPid(text)),
-  error:(text) => console.error(withPid(text)),
-  log: (text) => console.log(withPid(text)),
-  start: (name, text) => {
-	  text !== false && console.info(`${name} process start...`);
-	  console.time(withPid(name));
-	  text && console.info(text);
-  },
-  end: (name, text) => {
-	  console.timeEnd(withPid(name));
-	  text && console.info(text);
-  }
-};
+const log4js = require('log4js');
+const logFile = require('./config').logs;
+log4js.loadAppender('dateFile');
+
 
 const noop = () => {};
 
 const defaultFormat = 'YYYYMMDDHHmmss',
-			defaultFormatDate = 'YYYYMMDD';
+	defaultFormatDate = 'YYYYMMDD';
 // 处理时间字符串的方法
 const timer = {
-  current: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format(defaultFormat),
+	current: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format(defaultFormat),
 	currentDate: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format(defaultFormatDate),
-  later: (hour, base) => (base ? moment(translateDatetimeFromString(base)) : moment()).add(hour || 0, 'hour').format(defaultFormat),
-  earlier: (hour, base) => (base ? moment(translateDatetimeFromString(base)) : moment()).subtract(hour || 0, 'hour').format(defaultFormat),
+	currentYear: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format('YYYY'),
+	currentMonth: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format('MM'),
+	later: (hour, base) => (base ? moment(translateDatetimeFromString(base)) : moment()).add(hour || 0, 'hour').format(defaultFormat),
+	earlier: (hour, base) => (base ? moment(translateDatetimeFromString(base)) : moment()).subtract(hour || 0, 'hour').format(defaultFormat),
 	between: (time, span) => {
 		let [start, end] = span.split('-');
 		return moment(translateDatetimeFromString(time)).isBetween(start, end, null, '[]');
 	},
 	timeToDate: (time) => moment(translateDatetimeFromString(time)).format(defaultFormatDate),
 	dateToTime: (date) => moment(date).format(defaultFormat),
-  sameHour: (time1, time2) => time1.slice(0, 10) == time2.slice(0, 10),
-  sameDay: (time1, time2) => time1.slice(0, 8) == time2.slice(0, 8)
+	sameHour: (time1, time2) => time1.slice(0, 10) == time2.slice(0, 10),
+	sameDay: (time1, time2) => time1.slice(0, 8) == time2.slice(0, 8)
 };
 function translateDatetimeFromString(dateString) {
 	let result = dateString;
@@ -44,11 +36,81 @@ function translateDatetimeFromString(dateString) {
 	}
 	return result;
 }
-function withPid (text) {
-	return `[${process.pid}]-${text}`;
+
+
+const writeFileSync = new Proxy(fs.writeFileSync, handleFilePathProxy(0));
+const createWriteStream = new Proxy(fs.createWriteStream, handleFilePathProxy(0));
+
+
+const logLayout = '[%d][%c][%p] - %m ----[pid:%z]';
+const logPattern = '.yyyy-MM-dd.log';
+
+for (let cate in logFile) {
+	if (logFile.hasOwnProperty(cate)) {
+		let lp = mergePath(logFile[cate]);
+		mkdir(lp);
+		log4js.addAppender(log4js.appenders.dateFile(lp,
+			logPattern,	log4js.layouts.patternLayout(logLayout), {alwaysIncludePattern: true}), cate);
+	}
 }
+
+
+// TODO: replace logger plugin with log server.
+const logger = function (category) {
+	const console = log4js.getLogger(category);
+	return {
+		info: (text) => {
+			console.info(text);
+		},
+		warn: (text) => console.warn(text),
+		error:(text) => console.error(text),
+		log: (text) => console.log(text),
+		start: (name, text) => {
+			text !== false && console.info(`${name} process start...`);
+			console.time(name);
+			text && console.info(text);
+		},
+		end: (name, text) => {
+			console.timeEnd(name);
+			text && console.info(text);
+		}
+	};
+};
+const XPLBLogger = logger('XPLB');
 
 const trigger = (func, ...args) => typeof func === 'function' && func.apply(this, args);
 
+function handleFilePathProxy(pathArgIndex) {
+	const index = pathArgIndex || 0;
+	return {
+		apply (target, ctx, args) {
+			let path = args[index];
+			path = mergePath(path);
+			mkdir(path);
+			let _args = [...args.slice(0, index), path, ...args.slice(index + 1)];
+			return Reflect.apply(target, ctx, _args);
+		}
+	};
+}
 
-module.exports = { logger, timer, trigger, noop };
+function mergePath(path) {
+	return join(
+		path.replace(/\$\{__dirname\}/, __dirname)
+		.replace(/\$\{year\}/, timer.currentYear())
+		.replace(/\$\{month\}/, timer.currentMonth())
+		.replace(/\$\{date\}/, timer.currentDate())
+		.replace(/\$\{time\}/, timer.current()));
+}
+function mkdir(path) {
+	let dirs = dirname(path).split(sep);
+	let currentDir = dirs[0];
+	for (let i = 1; i < dirs.length; i ++) {
+		currentDir = join(currentDir, dirs[i]);
+		if (!fs.existsSync(currentDir)) {
+			fs.mkdirSync(currentDir);
+		}
+	}
+}
+
+
+module.exports = { logger, timer, trigger, noop, writeFileSync, createWriteStream, XPLBLogger };

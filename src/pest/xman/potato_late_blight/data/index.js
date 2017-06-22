@@ -2,7 +2,7 @@
  * Created by qtisa on 2017/6/18.
  */
 
-const { logger } = require('../../../utils');
+const { XPLBLogger: logger } = require('../../../utils');
 
 logger.start('prepare-data-to-memory');
 

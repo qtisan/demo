@@ -1,4 +1,4 @@
-const logger = require('../../../utils').logger;
+const {XPLBLogger: logger} = require('../../../utils');
 
 // TODO: modify the function, by the redis cache functions & export different types in saving and loading.
 module.exports = {

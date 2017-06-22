@@ -1,7 +1,7 @@
 
 const Random = require('mockjs').Random;
 const moment = require('moment');
-const { logger, timer } = require('../../../utils');
+const { XPLBLogger: logger, timer } = require('../../../utils');
 
 const { SiteWetness, SiteWetnessList } = require('../core');
 
