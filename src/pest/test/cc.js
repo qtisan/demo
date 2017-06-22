@@ -94,15 +94,21 @@
 //
 // console.log(j(__dirname, './f'));
 //
+//
+// const {XPLBLogger: logger} = require('../utils');
+//
+// // logger.info('hello, world!');
+//
+// logger.start('rrr');
+// let i = 1000000, a = [];
+// while (i--) a.push(Math.acos(i));
+// logger.end('rrr');
+//
+//
 
-const {XPLBLogger: logger} = require('../utils');
+const f = (x, {a=2,b=3}=x) => console.log('a'+a+',b'+b);
 
-logger.info('hello, world!');
-
-
-
-
-
+f({a:9,b:8});
 
 
 

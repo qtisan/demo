@@ -11,7 +11,7 @@ const count = Random.integer(1, 726);
 
 const getSiteInfectList = () => {
 
-	logger.start('generate-726-sites-infect-data', false);
+	logger.start('generate-726-sites-infect-data');
 
 	// TODO: fetch from redis or get data from database and recompute;
 	// =============================================================

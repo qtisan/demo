@@ -2,7 +2,7 @@
  * Created by qtisa on 2017/6/18.
  */
 
-const { timer, trigger } = require('../../../utils');
+const { timer, trigger, XPLBLogger: logger } = require('../../../utils');
 const EventEmitter = require('events');
 
 const { SiteInfect } = require('./site');
@@ -41,25 +41,30 @@ class Solution extends EventEmitter {
 				if (degree != 0) { // 侵染严重程度不为0，即湿润期当前小时符合侵染条件
 					if (siteWetness.site_infect instanceof SiteInfect) {
 						Object.assign(siteWetness.site_infect, {
-							degree
+							degree, current_time: siteWetness.current_time
 						});
 						siteInfect = siteWetness.site_infect;
+						// logger.debug(siteInfect.current_time+'33333');
 					}
 					else {
 						siteInfect = new SiteInfect(siteWetness, {
 							start_time: siteWetness.start_time,
 							degree
 						});
+						// logger.debug(siteInfect.current_time+'44444');
 					}
 					this.emit('infect.success', {siteWetness, siteInfect, solution: this});
 				}
 				else {
 					siteInfect = siteInfect.skip('degree is 0.');
+					// logger.debug(siteInfect.current_time+'22222');
 				}
+				// logger.debug(siteInfect.current_time + 'xxxxx');
 			}
 			else {
 				siteInfect = siteInfect.skip('temperature not correct or time lasts haven\'t met the least.');
 				this.emit('infect.tempAvgNotMatched', {siteWetness, last_time, solution: this});
+				// logger.debug(siteInfect.current_time + 'yyyyy');
 			}
 			// 侵染计算结束后的回调事件
 			this.emit('infect.computeEnd', {siteWetness, siteInfect, solution: this});
@@ -67,6 +72,7 @@ class Solution extends EventEmitter {
 		else {
 			siteInfect = siteInfect.skip('solution not exist.');
 			this.emit('infect.solutionNotExist', {siteWetness, solution: this});
+			// logger.debug(siteInfect.current_time + 'zzzzz');
 		}
 		return siteInfect;
 	}

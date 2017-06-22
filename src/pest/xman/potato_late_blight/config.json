@@ -1,13 +1,12 @@
 {
 
-  "processNum" : 1,
 
   "cache": {
-    "siteInfectList": "${__dirname}/cache/${year}${month}/${date}/site_infect_list.${time}.json",
-    "siteInfectResult": "${__dirname}/cache/${year}${month}/${date}/site_infect_result.${time}.json",
-    "siteWeatherList": "${__dirname}/cache/${year}${month}/${date}/site_weather_list.${time}.json",
-    "siteWetnessList": "${__dirname}/cache/${year}${month}/${date}/site_wetness_list.${time}.json",
-    "siteWetnessCurrent": "${__dirname}/cache/${year}${month}/${date}/site_wetness_current.${time}.json"
+    "siteInfectList": "${__dirname}/cache/xman/potato_late_blight/${year}${month}/${date}/site_infect_list.${time}.json",
+    "siteInfectResult": "${__dirname}/cache/xman/potato_late_blight/${year}${month}/${date}/site_infect_result.${time}.json",
+    "siteWeatherList": "${__dirname}/cache/xman/potato_late_blight/${year}${month}/${date}/site_weather_list.${time}.json",
+    "siteWetnessList": "${__dirname}/cache/xman/potato_late_blight/${year}${month}/${date}/site_wetness_list.${time}.json",
+    "siteWetnessCurrent": "${__dirname}/cache/xman/potato_late_blight/${year}${month}/${date}/site_wetness_current.${time}.json"
   }
 
 }

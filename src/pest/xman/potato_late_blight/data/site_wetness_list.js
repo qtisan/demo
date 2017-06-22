@@ -9,7 +9,7 @@ const siteList = require('./site_list');
 
 const getSiteWetnessList = () => {
 
-	logger.start('generate-726-sites-wetness-data', false);
+	logger.start('generate-726-sites-wetness-data');
 
 	// TODO: fetch from redis or get data from mysql and recompute
 	// ============================================================

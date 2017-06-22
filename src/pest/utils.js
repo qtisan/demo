@@ -5,6 +5,7 @@ const { join, sep, dirname } = require('path');
 
 const log4js = require('log4js');
 const logFile = require('./config').logs;
+log4js.clearAppenders();
 log4js.loadAppender('dateFile');
 
 
@@ -57,22 +58,25 @@ for (let cate in logFile) {
 
 // TODO: replace logger plugin with log server.
 const logger = function (category) {
-	const console = log4js.getLogger(category);
+	const con = log4js.getLogger(category);
+	con.setLevel('DEBUG');
+	con.debugTimer = {};
 	return {
-		info: (text) => {
-			console.info(text);
-		},
-		warn: (text) => console.warn(text),
-		error:(text) => console.error(text),
-		log: (text) => console.log(text),
+		info: (text) =>  con.info(text),
+		warn: (text) => con.warn(text),
+		error:(text) => con.error(text),
+		trace: (text) => con.trace(text),
+		fatal: (text) => con.fatal(text),
+		debug: (text) => con.debug(text),
 		start: (name, text) => {
-			text !== false && console.info(`${name} process start...`);
-			console.time(name);
-			text && console.info(text);
+			typeof text === 'boolean' && con.info(`timing | ${name} now start.`);
+			con.debugTimer[name] = new Date().getTime();
+			text !== true && text && con.info(text);
 		},
 		end: (name, text) => {
-			console.timeEnd(name);
-			text && console.info(text);
+			let spend = new Date().getTime() - con.debugTimer[name];
+			con.info(`timing | ${name} now end, cost ${spend} ms.`);
+			text && con.info(text);
 		}
 	};
 };

@@ -92,14 +92,14 @@ class ProcessPool extends EventEmitter {
 		const num = this.pool.length;
 		let i = Number.isInteger(child) ? child : Math.floor(Math.random() * num);
 		let _child = child.pid ? child : this.pool[i % num];
-		_child.send({command: 'execute', message: message.el});
+		_child.send({command: 'execute', message: message});
 	}
 
 	dispatch (child) {
 		let collection = this.currentBatch.collection;
 		if (collection.length > this.currentBatch.index) {
-			const message = {el: collection[this.currentBatch.index ++]};
-			this.emit('singleStart', {data: message.el, batch: this.currentBatch, child});
+			let message = collection[this.currentBatch.index ++];
+			this.emit('singleStart', {data: message, batch: this.currentBatch, child});
 			this.execute(message, child);
 		}
 	}
@@ -125,7 +125,8 @@ class ProcessPool extends EventEmitter {
 	}
 
 	finish (data, child) {
-		this.currentBatch.finished.push(data);
+		// this.currentBatch.finished.push(data); // TODO: this costs memories.
+		this.currentBatch.finished.push(null);
 		this.emit('singleFinish', {data, batch: this.currentBatch, child});
 		let finishedCount = this.currentBatch.finished.length + this.currentBatch.errors.length;
 		const finished = finishedCount == this.currentBatch.count;

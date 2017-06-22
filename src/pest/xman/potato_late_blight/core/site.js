@@ -1,5 +1,5 @@
 
-const { timer, trigger } = require('../../../utils');
+const { timer, trigger, XPLBLogger: logger } = require('../../../utils');
 const EventEmitter = require('events');
 
 // 站点父类
@@ -92,18 +92,23 @@ class SiteWetness extends Site{
 			typeof drop == 'function' && drop.call(this, that);
 			this.emit('wetness.computeInterrupt', { weather1Hour, siteWetness: that }); // 符合条件的回调事件
 			this.clear();
-			return this.skip('wetness interrupt.');
+			let skip = this.skip('wetness interrupt.');
+			// logger.debug(skip.current_time+'fffff');
+			return skip;
 		}
 		else { // 不符合中断条件
 			this.emit('wetness.computeNotInterrupt', { weather1Hour, siteWetness: this }); // 不符合条件的回调事件
 			// 当前在生育期才计算
 			if (this.in_growth) {
 				this.site_infect = solution.judgeInfect(this); // 【入口】根据当前湿润期情况，判断生成侵染对象
+				// logger.debug(this.site_infect.current_time+'ggggg');
 				return this.site_infect;
 			}
 			else {
 				this.emit('infect.notInGrowth', { weather1Hour, siteWetness: this });
-				return this.skip('not in growth.');
+				let skip = this.skip('not in growth.');
+				// logger.debug(skip.current_time+'eeeee');
+				return skip;
 			}
 		}
 	}
@@ -128,18 +133,23 @@ class SiteInfect extends Site {
 
 	constructor (siteWetness, {
 		start_time = timer.later(siteWetness.last_time, siteWetness.start_time), // 侵染期开始时间，YYYYMMDDHHmmss
+		degree = 0, // 当前侵染的严重程度，创建时需覆盖
 		end_time = '', // 侵染期结束时间，YYYYMMDDHHmmss，【在代对象中填充时更新】
 		last_day = 1, // 侵染期持续天数，【在代对象中填充时更新】
 		period = 0, // 当前代，【在代对象中填充时更新】
 		times = 0, // 当前次，【在代对象中填充时更新】
-		degree = 0, // 当前侵染的严重程度，创建时需覆盖
 		score = 0, // 当天的积分，【在代对象中填充时更新】
-		score_total = 0, // 当前次的总积分，【在代对象中填充时更新】
-		current_time = siteWetness.current_time // 当前日期，YYYYMMDD
+		score_total = 0 // 当前次的总积分，【在代对象中填充时更新】
 	} = siteWetness) {
-		super(siteWetness.site_id, siteWetness.site_name, current_time, siteWetness.solution);
-		this.site_wetness = Object.assign({}, siteWetness);
-		Object.assign(this, {start_time, end_time, last_day, period, times, degree, score, score_total});
+		super(siteWetness.site_id, siteWetness.site_name, siteWetness.current_time, siteWetness.solution);
+		if (siteWetness.site_wetness) {
+			Object.assign(this, siteWetness);
+			this.site_wetness = Object.assign({}, siteWetness.site_wetness);
+		}
+		else {
+			Object.assign(this, {start_time, end_time, last_day, period, times, degree, score, score_total});
+			this.site_wetness = Object.assign({}, siteWetness);
+		}
 	}
 
 }

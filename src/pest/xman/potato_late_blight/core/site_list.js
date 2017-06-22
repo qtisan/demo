@@ -72,9 +72,8 @@ class SiteWetnessList extends SiteList {
 				start_time: site.start_time,
 				end_time: site.end_time,
 				last_time: site.last_time,
-				site_infect: site.site_infect,
-				current_time: site.current_time,
-				growth: site.growth
+				// site_infect: site.site_infect, // TODO: should clear the props
+				current_time: site.current_time
 			}
 		};
 		return super.serialize(predicate, json);
@@ -108,23 +107,22 @@ class SiteWetnessList extends SiteList {
 	// TODO: add wetness list features.
 }
 
-let n = 0, m=0, l=0, p=0;
+// let n = 0, m=0, l=0, p=0;
 class SiteInfectList extends SiteList{
 
 	constructor (collection) {
-		super(collection && collection.map(({siteId, siteName, currentInfect, forecastInfects}) => {
+		super(collection && collection.map(({site_id, site_name, current, forecast}) => {
 			return {
-				site_id: siteId,
-				site_name: siteName,
-				current: new SiteInfect(currentInfect),
+				site_id, site_name,
+				current: new SiteInfect(current),
 				forecast: (() => {
-					let forecast = {};
-					for (let prop in forecastInfects) {
-						if (forecastInfects.hasOwnProperty(prop)) {
-							forecast[prop] = new SiteInfect(forecastInfects[prop]);
+					let _forecast = {};
+					for (let prop in forecast) {
+						if (forecast.hasOwnProperty(prop)) {
+							_forecast[prop] = new SiteInfect(forecast[prop]);
 						}
 					}
-					return forecast;
+					return _forecast;
 				})()
 			}
 		}));
@@ -147,7 +145,7 @@ class SiteInfectList extends SiteList{
 			const current_date = timer.timeToDate(current_time);
 			const lastSiteInfect = this.getSite(siteId);
 			const sameDay = timer.sameDay(current_time, this.current_time);
-			// console.log(`si-ct:${current_time}, this-ct:${this.current_time}`);
+			// logger.debug(`si-ct:${current_time}, this-ct:${this.current_time}`);
 			if (!lastSiteInfect) {
 				this.add({
 					site_id: siteInfect.site_id,
@@ -174,7 +172,7 @@ class SiteInfectList extends SiteList{
 				lastSiteInfect.forecast[current_date] = siteInfect;
 			}
 		}
-		// console.log(`${l}+${m}+${n}+${p}=${l+m+n+p}`);
+		// logger.debug(`${l}+${m}+${n}+${p}=${l+m+n+p}`);
 	}
 
 	serialize (json) {
@@ -191,7 +189,7 @@ class SiteInfectList extends SiteList{
 				score: site.score,
 				score_total: site.score_total,
 				current_time: site.current_time,
-				growth: site.growth,
+				// site_wetness: site.site_wetness, // TODO: should clear the props
 				skip: site.skip,
 				note: site.note
 			}

@@ -16,7 +16,7 @@ module.exports = {
 		logger.start('compute-sites-in-future-240-hours', 'compute started...');
 	},
 	onSingleSiteComputeStart: ({ siteWeather }) => {
-		logger.start(`site[${siteWeather.site_id}]-compute`, false);
+		logger.start(`site[${siteWeather.site_id}]-compute`);
 	},
 	onSingleSiteComputeEnd: ({ siteWeather }) => {
 		logger.end(`site[${siteWeather.site_id}]-compute`);
@@ -86,6 +86,6 @@ module.exports = {
 		resultSiteInfectList.saveToFile(infectFile);
 		logger.info(`test file is saved to ${wetnessFile} & ${infectFile}.`);
 
-		process.exit();
+		setTimeout(process.exit, 1000);
 	}
 };
