@@ -5,7 +5,7 @@
 module.exports = {
 
 	logs: {
-		'XPLB': '${__dirname}/logs/xman/potato_late_blight/xplb'
+		'XPLB': '{{__dirname}}/logs/xman/potato_late_blight/xplb'
 	}
 
 };

@@ -105,11 +105,47 @@
 // logger.end('rrr');
 //
 //
-
-const f = (x, {a=2,b=3}=x) => console.log('a'+a+',b'+b);
-
-f({a:9,b:8});
-
+//
+// const f = (x, {a=2,b=3}=x) => console.log('a'+a+',b'+b);
+//
+// f({a:9,b:8});
+//
+//
+//
+// class A {
+// 	constructor (name) {
+// 		this.name = name;
+// 	}
+// 	skip (note) {
+// 		return Object.assign(this, {
+// 			note
+// 		});
+// 	}
+// }
+//
+// class AA extends A {
+// 	constructor (name) {
+// 		super(name);
+// 	}
+// 	judge () {
+// 		console.log(this.skip('hello.'));
+// 	}
+// }
+//
+// let a = new AA('lennon');
+// a.judge();
+//
+// let b = Object.assign({}, a, {s:5, d:8});
+//
+// console.log(a);
+// console.log(b);
+//
+//
+// let a = {}, s = 'compute-sites[32]-in-future-240-hours-batch[batch-infect-computation-1498264659582]';
+//
+// a[s] = 5;
+//
+// console.log(a[s]);
 
 
 

@@ -2,22 +2,26 @@
  * Created by qtisa on 2017/6/18.
  */
 
-const { XPLBLogger: logger, timer, writeFileSync } = require('../../../utils');
+const { XPLBLogger: logger, timer, writeFileSync, writeFileSyncWithParams } = require('../../../utils');
 
 const { Site, SiteWetness, SiteInfect } = require('./site');
 
 
 class SiteList {
 
-	constructor (collection) {
+	constructor (collection, predicate) {
 		this.sites = [];
 		if (collection instanceof Array) {
 			collection.forEach(site => this.sites.push(site));
 		}
+		this.predicate = site => Object.assign({}, site);
+		if (typeof predicate === 'function') {
+			this.predicate = predicate;
+		}
 	}
 
-	static fromData (collection) {
-
+	static fromData (collection, predicate) {
+		return new SiteList(collection, predicate);
 	}
 
 	getSite (id) {
@@ -35,17 +39,25 @@ class SiteList {
 	}
 
 	count () {
-		return this.sites.count;
+		return this.sites.length;
 	}
 
 	serialize (predicate, json) {
-		let _predicate = typeof predicate == 'function' ? predicate : (site => Object.assign({}, site));
+		let _predicate = typeof predicate == 'function' ? predicate : this.predicate;
 		let result = this.sites.map(_predicate);
 		return json ? JSON.stringify(result) : result;
 	}
-	saveToFile (path) {
-		const sites = this.serialize();
+	saveToFile (path, predicate) {
+		const sites = predicate ? this.serialize(predicate) : this.serialize();
 		writeFileSync(path, JSON.stringify({ count: this.count(), sites }));
+	}
+	saveToFileWithParams (params, path, predicate) {
+		const sites = predicate ? this.serialize(predicate) : this.serialize();
+		writeFileSyncWithParams(params, path, JSON.stringify({ count: this.count(), sites }));
+	}
+
+	combine (that) {
+		that.sites.forEach(site => this.add(site));
 	}
 
 }
@@ -60,23 +72,23 @@ class SiteWetnessList extends SiteList {
 	static fromData (collection) {
 		return new SiteWetnessList(collection);
 	}
+	static sitePredicate (site) {
+		return {
+			site_id: site.site_id,
+			site_name: site.site_name,
+			continuous: site.continuous,
+			humid_array: site.humid_array,
+			temp_avg: site.temp_avg,
+			start_time: site.start_time,
+			end_time: site.end_time,
+			last_time: site.last_time,
+			// site_infect: site.site_infect, // TODO: should clear the props
+			current_time: site.current_time
+		}
+	}
 
 	serialize (json) {
-		const predicate = (site) => {
-			return {
-				site_id: site.site_id,
-				site_name: site.site_name,
-				continuous: site.continuous,
-				humid_array: site.humid_array,
-				temp_avg: site.temp_avg,
-				start_time: site.start_time,
-				end_time: site.end_time,
-				last_time: site.last_time,
-				// site_infect: site.site_infect, // TODO: should clear the props
-				current_time: site.current_time
-			}
-		};
-		return super.serialize(predicate, json);
+		return super.serialize(SiteWetnessList.sitePredicate, json);
 	}
 	
 	updateSite (siteWetness, override) {
@@ -134,8 +146,43 @@ class SiteInfectList extends SiteList{
 		infectList.refreshCurrentTime(time);
 		return infectList;
 	}
+
+	static sitePredicate (site) {
+		let res = {
+			site_id: site.site_id,
+			site_name: site.site_name,
+			start_time: site.start_time,
+			end_time: site.end_time,
+			last_day: site.last_day,
+			period: site.period,
+			times: site.times,
+			degree: site.degree,
+			score: site.score,
+			score_total: site.score_total,
+			current_time: site.current_time,
+			status: site.status,
+			note: site.note
+		};
+		let sw = site.site_wetness;
+		if (sw) {
+			res.site_wetness = {
+				continuous: sw.continuous,
+				humid_array: sw.humid_array,
+				temp_avg: sw.temp_avg,
+				start_time: sw.start_time,
+				end_time: sw.end_time,
+				last_time: sw.last_time,
+				current_time: sw.current_time
+			};
+		}
+		return res;
+	}
+
 	refreshCurrentTime (time) {
 		this.current_time = timer.current();
+	}
+	setCurrentSite (site) {
+		this.current_site = site.site_id ? site : this.getSite(site);
 	}
 	// 更新一个站的侵染期对象，无则添加，有则更新
 	updateSite (siteInfect) {
@@ -143,76 +190,61 @@ class SiteInfectList extends SiteList{
 			const siteId = siteInfect.site_id;
 			const current_time = siteInfect.current_time;
 			const current_date = timer.timeToDate(current_time);
-			const lastSiteInfect = this.getSite(siteId);
-			const sameDay = timer.sameDay(current_time, this.current_time);
-			// logger.debug(`si-ct:${current_time}, this-ct:${this.current_time}`);
-			if (!lastSiteInfect) {
-				this.add({
+			const lastSiteInfectPoint = this.current_site &&
+				(this.current_site.site_id == siteId ? this.current_site : this.getSite(siteId));
+			const today = timer.sameDay(current_time, this.current_time);
+			// logger.debug(`[****]-upon:${today}-[${siteId}],si:${current_time}, this:${this.current_time}, lsi:${lastSiteInfectPoint && lastSiteInfectPoint.current.current_time}`);
+			if (!lastSiteInfectPoint) {
+				let current_site = {
 					site_id: siteInfect.site_id,
 					site_name: siteInfect.site_name,
-					current: sameDay && siteInfect,
-					forecast: sameDay ? {} : {[current_date]: siteInfect}
-				});
-				// p++;
+					current: today && siteInfect,
+					forecast: today ? {} : {[current_date]: siteInfect}
+				};
+				this.add(current_site);
+				this.setCurrentSite(current_site);
+				// p ++;
 			}
-			else if (sameDay) {
+			else if (today) {
 				// l ++;
-				if (!lastSiteInfect.current.skip) {
-					lastSiteInfect.current.current_time = siteInfect.current_time;
-					lastSiteInfect.current.degree = siteInfect.degree;
+				if (lastSiteInfectPoint.current.status == 'ok') {
+					lastSiteInfectPoint.current.current_time = siteInfect.current_time;
+					lastSiteInfectPoint.current.degree = siteInfect.degree;
+				}
+				else {
+					lastSiteInfectPoint.current = siteInfect;
 				}
 			}
-			else if (lastSiteInfect.forecast[current_date]) {
+			else if (lastSiteInfectPoint.forecast[current_date]) {
 				// m ++;
-				lastSiteInfect.forecast[current_date].current_time = siteInfect.current_time;
-				lastSiteInfect.forecast[current_date].degree = siteInfect.degree;
+				lastSiteInfectPoint.forecast[current_date].current_time = siteInfect.current_time;
+				lastSiteInfectPoint.forecast[current_date].degree = siteInfect.degree;
 			}
 			else {
 				// n ++;
-				lastSiteInfect.forecast[current_date] = siteInfect;
+				lastSiteInfectPoint.forecast[current_date] = siteInfect;
 			}
+			// logger.debug(`[****]-same:${today}-[${siteId}],si:${current_time}, this:${this.current_time}, lsi:${lastSiteInfectPoint && lastSiteInfectPoint.current.current_time}`);
+			// logger.debug(`[----]-site:[${siteId}]-[l]${l}+[m]${m}+[n]${n}+[p]${p}=[${l+m+n+p}]`);
 		}
-		// logger.debug(`${l}+${m}+${n}+${p}=${l+m+n+p}`);
 	}
 
 	serialize (json) {
-		const sitePredicate = (site) => {
-			return {
-				site_id: site.site_id,
-				site_name: site.site_name,
-				start_time: site.start_time,
-				end_time: site.end_time,
-				last_day: site.last_day,
-				period: site.period,
-				times: site.times,
-				degree: site.degree,
-				score: site.score,
-				score_total: site.score_total,
-				current_time: site.current_time,
-				// site_wetness: site.site_wetness, // TODO: should clear the props
-				skip: site.skip,
-				note: site.note
-			}
-		};
 		const predicate = (site) => {
 			let forecast = site.forecast, _forecast = {};
 			for (let prop in forecast) {
 				if (forecast.hasOwnProperty(prop)) {
-					_forecast[prop] = sitePredicate(forecast[prop]);
+					_forecast[prop] = SiteInfectList.sitePredicate(forecast[prop]);
 				}
 			}
 			return {
 				site_id: site.site_id,
 				site_name: site.site_name,
-				current: sitePredicate(site.current),
+				current: SiteInfectList.sitePredicate(site.current),
 				forecast: _forecast
 			}
 		};
 		return super.serialize(predicate, json);
-	}
-
-	combine (that) {
-		that.sites.forEach(site => this.add(site));
 	}
 
 	// 清空列表，一个新的预测日开始时执行

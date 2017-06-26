@@ -8,7 +8,7 @@ const fs = require('fs');
 const {join} = require('path');
 
 const defaultConfig = {
-	processNum: CPU_NUM
+	process_num: CPU_NUM
 };
 
 function getConfigFromJSON() {

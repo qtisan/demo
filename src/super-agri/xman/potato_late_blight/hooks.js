@@ -9,48 +9,49 @@ module.exports = {
 	// TODO: synchronize with redis & save to mysql
 	onStart: ({ siteWetnessListData, siteInfectListData,
 		completedSiteWetnessListData, currentSiteWetnessListData,
-		solutionCollection, growthCollection, siteWeatherList }) => {
-		writeFileSync(cache.siteWeatherList, JSON.stringify(siteWeatherList));
-		writeFileSync(cache.siteInfectList, JSON.stringify(siteInfectListData));
-		writeFileSync(cache.siteWetnessList, JSON.stringify(siteWetnessListData));
-		logger.start('compute-sites-in-future-240-hours', 'compute started...');
+		solutionCollection, growthCollection, batchId, siteWeatherList }) => {
+		writeFileSync(cache.site_weather_list, JSON.stringify(siteWeatherList));
+		writeFileSync(cache.site_infect_list, JSON.stringify(siteInfectListData));
+		writeFileSync(cache.site_wetness_list, JSON.stringify(siteWetnessListData));
+		logger.start(`compute-${siteWetnessListData.length}sites-in-future-240-hours_${batchId}`);
 	},
-	onSingleSiteComputeStart: ({ siteWeather }) => {
+	onSingleSiteComputeStart: ({ siteWeather, siteWetness }) => {
 		logger.start(`site[${siteWeather.site_id}]-compute`);
 	},
-	onSingleSiteComputeEnd: ({ siteWeather }) => {
+	onSingleSiteComputeEnd: ({ siteWeather, siteWetness, siteInfectList, historySiteInfectList }) => {
 		logger.end(`site[${siteWeather.site_id}]-compute`);
+		historySiteInfectList.saveToFileWithParams({site_id: siteWetness.site_id}, cache.site_infect_history);
 	},
 
-	onWetnessComputeStart: () => {
+	onWetnessComputeStart: ({weather1Hour, siteWetness}) => {
 
 	},
-	onWetnessComputeInterrupt: () => {
+	onWetnessComputeInterrupt: ({weather1Hour, siteWetness}) => {
 
 	},
-	onWetnessComputeNotInterrupt: () => {
+	onWetnessComputeNotInterrupt: ({weather1Hour, siteWetness}) => {
 
 	},
-	onInfectNotInGrowth: () => {
+	onInfectNotInGrowth: ({weather1Hour, siteWetness}) => {
 
 	},
 
-	onInfectComputeStart: () => {
+	onInfectComputeStart: ({siteWetness, siteInfect, solution}) => {
 
 	},
-	onInfectSolutionNotExist: () => {
+	onInfectSolutionNotExist: ({siteWetness, solution}) => {
 
 	},
-	onInfectTempAvgMatched: () => {
+	onInfectTempAvgMatched: ({siteWetness, last_time, temp_avg, lasts, solution}) => {
 
 	},
-	onInfectSuccess: () => {
+	onInfectSuccess: ({siteWetness, siteInfect, solution}) => {
 
 	},
-	onInfectTempAvgNotMatched: () => {
+	onInfectTempAvgNotMatched: ({siteWetness, last_time, temp_avg, solution}) => {
 
 	},
-	onInfectComputeEnd: () => {
+	onInfectComputeEnd: ({siteWetness, siteInfect, solution}) => {
 
 	},
 
@@ -76,15 +77,16 @@ module.exports = {
 		// data: {}
 	},
 
-	onEnd: ({	resultSiteInfectList, resultCompletedSiteWetnessList, resultCurrentSiteWetnessList }) => {
-		logger.end('compute-sites-in-future-240-hours', 'compute finished.');
+	onEnd: ({	resultSiteInfectList, resultCompletedSiteWetnessList,
+		resultCurrentSiteWetnessList, batchId }) => {
 
-		logger.info('[customer]saving the test result...');
-		let wetnessFile = cache.siteWetnessCurrent,
-				infectFile = cache.siteInfectResult;
-		resultCurrentSiteWetnessList.saveToFile(wetnessFile);
-		resultSiteInfectList.saveToFile(infectFile);
-		logger.info(`test file is saved to ${wetnessFile} & ${infectFile}.`);
+		logger.end(`compute-${resultCurrentSiteWetnessList.count()}sites-in-future-240-hours_${batchId}`);
+
+		logger.info('[cache] saving the test result...');
+		resultCurrentSiteWetnessList.saveToFile(cache.site_wetness_current);
+		resultSiteInfectList.saveToFile(cache.site_infect_result);
+		resultCompletedSiteWetnessList.saveToFile(cache.site_wetness_completed);
+		logger.info(`[cache] result is saved.`);
 
 		setTimeout(process.exit, 1000);
 	}

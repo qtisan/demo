@@ -1,6 +1,7 @@
 
 const { timer, trigger, XPLBLogger: logger } = require('../../../utils');
 const EventEmitter = require('events');
+const note = require('./note');
 
 // 站点父类
 class Site extends EventEmitter {
@@ -15,7 +16,7 @@ class Site extends EventEmitter {
 	// 更新当天所在的生育期，不传参数即用当前系统时间
 	updateGrowth (getGrowth, time) {
 		this.current_time = (time ? timer.current(time) : this.current_time) || timer.current();
-		this.growth = getGrowth.apply(this, [this.site_id, this.current_time]);
+		this.growth = this.growth || getGrowth.apply(this, [this.site_id, this.current_time]);
 		this.growth && this.growth.refresh(this.current_time);
 		this.in_growth = !!this.growth && !!this.growth.season_index;
 	}
@@ -30,14 +31,11 @@ class Site extends EventEmitter {
 		Object.assign(that, this);
 		return that;
 	}
-	skip (note) {
-		return {
-			site_id: this.site_id,
-			site_name: this.site_name,
-			current_time: this.current_time,
-			skip: true,
-			note: note || 'it is skipped.'
-		};
+	skip (status, param) {
+		return Object.assign({}, this, note[status](param));
+	}
+	ok () {
+		this.status = 'ok';
 	}
 }
 
@@ -59,6 +57,11 @@ class SiteWetness extends Site{
 	}) {
 		super(site_id, site_name, current_time, solution, growth);
 		Object.assign(this, {continuous, humid_array, temp_avg, start_time, end_time, last_time, site_infect});
+	}
+	clone () {
+		const that = new SiteWetness(this);
+		that.site_infect = that.site_infect instanceof SiteInfect ? that.site_infect.clone(that) : Object.assign({}, that.site_infect);
+		return that;
 	}
 	// 清空湿润期方法，湿润条件连续中断时调用
 	clear () {
@@ -92,9 +95,7 @@ class SiteWetness extends Site{
 			typeof drop == 'function' && drop.call(this, that);
 			this.emit('wetness.computeInterrupt', { weather1Hour, siteWetness: that }); // 符合条件的回调事件
 			this.clear();
-			let skip = this.skip('wetness interrupt.');
-			// logger.debug(skip.current_time+'fffff');
-			return skip;
+			return this.skip('interrupt', that.humid_array.join());
 		}
 		else { // 不符合中断条件
 			this.emit('wetness.computeNotInterrupt', { weather1Hour, siteWetness: this }); // 不符合条件的回调事件
@@ -106,9 +107,7 @@ class SiteWetness extends Site{
 			}
 			else {
 				this.emit('infect.notInGrowth', { weather1Hour, siteWetness: this });
-				let skip = this.skip('not in growth.');
-				// logger.debug(skip.current_time+'eeeee');
-				return skip;
+				return this.skip('out_of_growth', weather1Hour.time);
 			}
 		}
 	}
@@ -119,7 +118,7 @@ class SiteWetness extends Site{
 		this.emit('wetness.computeStart', {weather1Hour, siteWetness: this});
 		this.current_time = timer.current(weather1Hour.time);
 		this.continuous += (humid >= this.solution.humid_bound ? '1' : '0');
-		this.humid_array.push(humid);
+		this.humid_array = [...this.humid_array, humid];
 		this.temp_avg = ((this.temp_avg * last + weather1Hour.temp) / (last + 1)).toFixed(1);
 		this.last_time += 1;
 		// 判断是否中断润湿期，若未中断，则计算侵染情况
@@ -150,6 +149,28 @@ class SiteInfect extends Site {
 			Object.assign(this, {start_time, end_time, last_day, period, times, degree, score, score_total});
 			this.site_wetness = Object.assign({}, siteWetness);
 		}
+	}
+	clone () {
+		const that = new SiteInfect(this);
+		that.site_wetness = new SiteWetness(this.site_wetness);
+		return that;
+	}
+
+	skip (status, param) {
+		let s = super.skip(status, param);
+		let sw = this.site_wetness;
+		if (sw) {
+			s.site_wetness = {
+				continuous: sw.continuous,
+				humid_array: [...sw.humid_array],
+				temp_avg: sw.temp_avg,
+				start_time: sw.start_time,
+				end_time: sw.end_time,
+				last_time: sw.last_time,
+				current_time: sw.current_time
+			};
+		}
+		return s;
 	}
 
 }

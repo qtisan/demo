@@ -175,6 +175,7 @@
 //
 // var twice = {
 // 	apply (target, ctx, args) {
+// 		console.log(args);
 // 		return Reflect.apply(...arguments) * 2;
 // 	}
 // };
@@ -184,7 +185,7 @@
 // var proxy = new Proxy(sum, twice);
 // console.log(proxy(1, 2));
 // // ok
-//
+
 
 
 // const path  = require('path');

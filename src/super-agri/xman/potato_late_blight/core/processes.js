@@ -6,7 +6,7 @@ const { XPLBLogger: logger } = require('../../../utils');
 const Random = require('mockjs').Random;
 const EventEmitter = require('events');
 const { fork } = require('child_process');
-const PROCESS_NUM = require('../config').get('processNum');
+const PROCESS_NUM = require('../config').get('process_num');
 
 // payload sent to child process: {command, message}, command: initial/execute/resume/converge
 // payload replied from child process: {status, message}, status: ready/error/finish/halt/warn/report
@@ -118,7 +118,7 @@ class ProcessPool extends EventEmitter {
 				id: batch.id, count: batch.collection.length, readyProcessCount: 0, index: 0, result: [],
 				errors: [], finished: [], warns: [], data: initialData, collection: batch.collection
 			});
-			initialData.batchId = batch.batchId;
+			initialData.batchId = batch.id;
 			this.emit('batchStart', {initialData, batch: this.currentBatch});
 			this.pool.forEach(child => child.send({command: 'initial', message: initialData}));
 		}

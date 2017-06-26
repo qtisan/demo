@@ -17,6 +17,7 @@ const defaultFormat = 'YYYYMMDDHHmmss',
 const timer = {
 	current: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format(defaultFormat),
 	currentDate: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format(defaultFormatDate),
+	currentHour: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format('HH'),
 	currentYear: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format('YYYY'),
 	currentMonth: (base) => (base ? moment(translateDatetimeFromString(base)) : moment()).format('MM'),
 	later: (hour, base) => (base ? moment(translateDatetimeFromString(base)) : moment()).add(hour || 0, 'hour').format(defaultFormat),
@@ -40,7 +41,7 @@ function translateDatetimeFromString(dateString) {
 
 
 const writeFileSync = new Proxy(fs.writeFileSync, handleFilePathProxy(0));
-const createWriteStream = new Proxy(fs.createWriteStream, handleFilePathProxy(0));
+const writeFileSyncWithParams = new Proxy(fs.writeFileSync, handleFilePathProxy(0, true));
 
 
 const logLayout = '[%d][%c][%p] - %m ----[pid:%z]';
@@ -84,26 +85,40 @@ const XPLBLogger = logger('XPLB');
 
 const trigger = (func, ...args) => typeof func === 'function' && func.apply(this, args);
 
-function handleFilePathProxy(pathArgIndex) {
-	const index = pathArgIndex || 0;
+function handleFilePathProxy(pathArgIndex, hasParams) {
+	let index = pathArgIndex || 0;
+	let start = 0;
+	if (hasParams) {
+		index ++;
+		start ++;
+	}
 	return {
 		apply (target, ctx, args) {
 			let path = args[index];
-			path = mergePath(path);
+			path = mergePath(path, hasParams && args[0]);
 			mkdir(path);
-			let _args = [...args.slice(0, index), path, ...args.slice(index + 1)];
+			let _args = [...args.slice(start, index), path, ...args.slice(index + 1)];
 			return Reflect.apply(target, ctx, _args);
 		}
 	};
 }
 
-function mergePath(path) {
-	return join(
-		path.replace(/\$\{__dirname\}/, __dirname)
-		.replace(/\$\{year\}/, timer.currentYear())
-		.replace(/\$\{month\}/, timer.currentMonth())
-		.replace(/\$\{date\}/, timer.currentDate())
-		.replace(/\$\{time\}/, timer.current()));
+function mergePath(path, params) {
+	let res = join(
+		path.replace(/\{\{__dirname\}\}/, __dirname)
+			.replace(/\{\{year\}\}/, timer.currentYear())
+			.replace(/\{\{month\}\}/, timer.currentMonth())
+			.replace(/\{\{date\}\}/, timer.currentDate())
+			.replace(/\{\{hour\}\}/, timer.currentHour())
+			.replace(/\{\{time\}\}/, timer.current()));
+	if (params) {
+		for (let i in params) {
+			if (params.hasOwnProperty(i)) {
+				res = res.replace(new RegExp(`\{\{${i}\}\}`), params[i]);
+			}
+		}
+	}
+	return res;
 }
 function mkdir(path) {
 	let dirs = dirname(path).split(sep);
@@ -117,4 +132,4 @@ function mkdir(path) {
 }
 
 
-module.exports = { logger, timer, trigger, noop, writeFileSync, createWriteStream, XPLBLogger };
+module.exports = { logger, timer, trigger, noop, writeFileSync, writeFileSyncWithParams, XPLBLogger };

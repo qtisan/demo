@@ -22,8 +22,10 @@ const {
 	siteWeatherList, siteWetnessList, siteInfectList,
 	solutionCollection, growthCollection
 } = require('./data');
+
 const completedSiteWetnessList = new SiteWetnessList();
-const currentSiteWetnessList = new SiteWetnessList(); //siteWeatherList.clone();
+const currentSiteWetnessList = new SiteWetnessList();
+
 
 const compute = handleCompute(
   { siteWetnessList, siteInfectList, completedSiteWetnessList, currentSiteWetnessList },

@@ -52,9 +52,7 @@ function handleCompute (
 			  resultCompletedSiteWetnessList.combine(r.data.completedSiteWetnessList);
 			  resultCurrentSiteWetnessList.combine(r.data.currentSiteWetnessList);
 		  });
-		  batch.id == batchId && trigger(onEnd, {
-			  resultSiteInfectList, resultCompletedSiteWetnessList,
-			  resultCurrentSiteWetnessList});
+		  batch.id == batchId && trigger(onEnd, { resultSiteInfectList, resultCompletedSiteWetnessList, resultCurrentSiteWetnessList, batchId});
 	  });
 	  processPool.createBatch(siteWeatherList, { // 创建批处理程序，传入初始化数据
 		  siteWetnessListData: siteWetnessList.serialize(),
@@ -83,7 +81,7 @@ function handleGetGrowth (growthCollection) {
 		// return growthCollection.find(growth => growth.site_id == siteId);
 	};
 }
-let n = 0;
+
 function handleSingleCompute (
 	{	siteWetnessList, siteInfectList, completedSiteWetnessList, currentSiteWetnessList },
 	{ getSolution, getGrowth },
@@ -94,18 +92,24 @@ function handleSingleCompute (
 		let siteId = site.site_id;
 		let forecast = site.forecast;
 		let siteWetness = siteWetnessList.getSite(siteId);
+		let historySiteInfectList = new SiteList([], SiteInfectList.sitePredicate);
 
 		siteWetness.updateSolution(getSolution); // 更新侵染方案
-		trigger(onSingleSiteComputeStart, { siteWeather: site, siteWetness });
 
+		trigger(onSingleSiteComputeStart, { siteWeather: site, siteWetness });
 		forecast.forEach((weather1Hour, index) => {
-			
+
 			siteWetness.updateGrowth(getGrowth, weather1Hour.time); // 更新生育期数据
+
+			// logger.debug(`[****]-get:[${siteId}],sw:${siteWetness.current_time}, w1:${weather1Hour.time}, lsi:${siteInfectList.current_site && siteInfectList.current_site.current.current_time}`);
 			const siteInfect = siteWetness.update(weather1Hour, (completedSiteWetness) => {
-				// dropped to history.
-				index == 0 && completedSiteWetness && completedSiteWetnessList.add(completedSiteWetness);
+				index == 0 && completedSiteWetness && completedSiteWetnessList.add(completedSiteWetness); // dropped to history.
 			}); // 更新湿润期侵染数据
+			historySiteInfectList.add(siteInfect);
+			// logger.debug(`[++++]-now:[${siteId}],si:${siteInfect.current_time}, w1:${weather1Hour.time}, lsi:${siteInfectList.current_site && siteInfectList.current_site.current.current_time}`);
+
 			siteInfectList.updateSite(siteInfect); // 更新侵染站点列表
+
 			if (index == 0) {
 				currentSiteWetnessList.add(siteWetness);
 			}
@@ -113,8 +117,9 @@ function handleSingleCompute (
 			// TODO: continue to compute.
 
 		});
-		callback.call(process, { siteWetness, siteInfectList });
-		trigger(onSingleSiteComputeEnd, { siteWeather: site, siteWetness, siteInfectList });
+		trigger(onSingleSiteComputeEnd, { siteWeather: site, siteWetness, siteInfectList, historySiteInfectList });
+
+		callback.call(process, { siteWetness, siteInfectList }); // send finish message
 
 	};
 }
