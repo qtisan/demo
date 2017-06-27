@@ -1,0 +1,21 @@
+[{
+	"﻿AREAID": "101010100",
+	"NAMEEN": "beijing",
+	"NAMECN": "北京",
+	"DISTRICTEN": "beijing",
+	"DISTRICTCN": "北京",
+	"PROVEN": "beijing",
+	"PROVCN": "北京",
+	"NATIONEN": "china",
+	"NATIONCN": "中国"
+}, {
+	"﻿AREAID": "101010200",
+	"NAMEEN": "haidian",
+	"NAMECN": "海淀",
+	"DISTRICTEN": "haidian",
+	"DISTRICTCN": "海淀",
+	"PROVEN": "beijing",
+	"PROVCN": "北京",
+	"NATIONEN": "china",
+	"NATIONCN": "中国"
+}]
