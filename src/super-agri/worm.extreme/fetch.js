@@ -22,6 +22,7 @@ function remote() {
 			if (!err) {
 				hsjd = JSON.parse(res.text).filter(r => r.infectNumber != 0);
 				hsjd = hsjd.filter(h => sites.findIndex(s => h.awsName.indexOf(s.COUNTY) != -1) != -1);
+				hsjd = hsjd.filter(h => sites.findIndex(s => h.cityName.indexOf(s.CITY) != -1) != -1);
 				writeFileSync(join(__dirname, './none.json'), JSON.stringify(hsjd));
 				console.log(`fetch the hsjd data success at ${new Date()}`);
 			}
