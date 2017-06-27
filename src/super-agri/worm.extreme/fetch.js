@@ -7,9 +7,12 @@ const {join} = require('path');
 const request = require('superagent');
 const moment = require('moment');
 
-let sites = JSON.parse(
+const sites = JSON.parse(
 	readFileSync(join(__dirname, './sites.json')).toString()
 ).filter(s => s.YEAR == '2017');
+const bills = JSON.parse(
+	readFileSync(join(__dirname, './bills.json')).toString()
+);
 
 let hsjd;
 
@@ -21,8 +24,23 @@ function remote() {
 		.end((err, res) => {
 			if (!err) {
 				hsjd = JSON.parse(res.text).filter(r => r.infectNumber != 0);
-				hsjd = hsjd.filter(h => sites.findIndex(s => h.awsName.indexOf(s.COUNTY) != -1) != -1);
 				hsjd = hsjd.filter(h => sites.findIndex(s => h.cityName.indexOf(s.CITY) != -1) != -1);
+				hsjd = hsjd.filter(h => {
+					let si = sites.find(s => h.awsName.indexOf(s.COUNTY) != -1);
+					if (!si) {
+						return false;
+					}
+					else {
+						h.awsName = si.COUNTY;
+						return true;
+					}
+				});
+				hsjd = hsjd.reduce((acc, val) => {
+					if (!acc.find(a => a.awsName == val.awsName)) {
+						acc.push(val);
+					}
+					return acc;
+				}, []);
 				writeFileSync(join(__dirname, './none.json'), JSON.stringify(hsjd));
 				console.log(`fetch the hsjd data success at ${new Date()}`);
 			}
@@ -49,10 +67,17 @@ function hasCity(list, name) {
 	return list.find(x => x.SC_NAME.indexOf(name) != -1);
 }
 
-function genMinMax(size, infectNumber, pesticide) {
-	const max = Math.sqrt(size) * Math.pow(infectNumber, 2) * Math.abs(Math.random()-0.5) * 334 * Math.pow(pesticide, 1.5);
-	const min = Math.random() * max / 2;
-	return [Number.parseInt(min.toFixed()), Number.parseInt(max.toFixed())];
+function genMinMax(size, infectNumber, pesticide, pest, crop) {
+	// const max = Math.sqrt(size) * Math.pow(infectNumber, 2) * Math.abs(Math.random()-0.5) * 334 * Math.pow(pesticide, 1.5);
+	// const min = Math.random() * max / 2;
+	// return [Number.parseInt(min.toFixed()), Number.parseInt(max.toFixed())];
+	const bill = bills.find(b => b.CROPS == crop && b.PESTS == pest && b.PEST_LEVEL == infectNumber && b.PESTICIDES == pesticide);
+	const mm = [ 1287, 8847 ];
+	if (bill) {
+		mm[0] = Number.parseInt((size * bill.RATIO * bill.P_MZXYYL / 10).toFixed());
+		mm[1] = Number.parseInt((size * bill.RATIO * bill.P_MZDYYL / 10).toFixed());
+	}
+	return mm;
 }
 
 function defaults ({ sp_name, sc_name, min, max, site }, {pest, rgmx, p_name, c_name, crop, dates}) {
@@ -75,13 +100,13 @@ function defaults ({ sp_name, sc_name, min, max, site }, {pest, rgmx, p_name, c_
 		AREACOUNT: 1,
 		MINPESTICIDE: min,
 		MAXPESTICIDE: max,
-		MLS_FZRQ: `${moment().subtract((Math.random()*2).toFixed(), 'day').format('YYYYMMDD')}-${moment().add((Math.random()*3).toFixed(), 'day').format('YYYYMMDD')}`
+		MLS_FZRQ: `${moment().subtract((Math.random()*(Math.sqrt(rgmx)-Math.random()*3)).toFixed(), 'day').format('YYYYMMDD')}-${moment().add((Math.random()*(Math.sqrt(rgmx)+3)).toFixed(), 'day').format('YYYYMMDD')}`
 	};
 }
 
 
 module.exports = function ({
-	area = '', rgmx = 3, pesticide = 2, crop = 4, pest = 4, factory = 2,
+	area = '', rgmx = 3, pesticide = 4, crop = 4, pest = 4, factory = 2,
 	c_name = '马铃薯',
 	p_name = '晚疫病',
 	dates = moment().format('YYYYMMDD')
@@ -97,7 +122,7 @@ module.exports = function ({
 					let sp_name = a.provinceName;
 					let item = hasProvince(list, sp_name);
 					let size = site.AREA;
-					let [min, max] = genMinMax(size, a.infectNumber, pesticide);
+					let [min, max] = genMinMax(size, a.infectNumber, pesticide, pest, crop);
 					if (!item) {
 						list.push(defaults({sp_name, site, min, max}, {pest, rgmx, p_name, c_name, crop, dates}));
 					}
@@ -118,7 +143,7 @@ module.exports = function ({
 					let sp_name = a.provinceName;
 					let item = hasCity(list, sc_name);
 					let size = site.AREA;
-					let [min, max] = genMinMax(size, a.infectNumber, pesticide);
+					let [min, max] = genMinMax(size, a.infectNumber, pesticide, pest, crop);
 					if (!item) {
 						list.push(defaults({sc_name, sp_name, site, min, max}, {pest, rgmx, p_name, c_name, crop, dates}));
 					}
@@ -138,12 +163,11 @@ module.exports = function ({
 					let sc_name = a.cityName;
 					let sp_name = a.provinceName;
 					let size = site.AREA;
-					let [min, max] = genMinMax(size, a.infectNumber, pesticide);
+					let [min, max] = genMinMax(size, a.infectNumber, pesticide, pest, crop);
 					list.push(defaults({sp_name, sc_name, max, min, site}, {pest, rgmx, p_name, c_name, crop, dates}));
 				}
 			});
 		}
-
 		list.forEach(n => {
 			n.TOTALSIZE = n.TOTALSIZE.toFixed(2);
 		});
