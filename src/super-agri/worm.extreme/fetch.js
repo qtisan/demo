@@ -49,8 +49,14 @@ function remote() {
 setInterval(remote, 3600000);
 remote();
 
-function getSite(awsName) {
-	return sites.find(s => awsName.indexOf(s.COUNTY) != -1);
+function getSite(awsName, provinceName) {
+	return sites.find(s => {
+		let judge = awsName.indexOf(s.COUNTY) != -1;
+		if (provinceName) {
+			judge = judge && s.PROVINCE.indexOf(provinceName) != -1;
+		}
+		return judge;
+	});
 }
 function getProvinceId(name) {
 	let r = name ? sites.find(s => s.PROVINCE.indexOf(name) != -1): '北京';
@@ -84,7 +90,7 @@ function defaults ({ sp_name, sc_name, min, max, site }, {pest, rgmx, p_name, c_
 	return {
 		SP_NAME: sp_name,
 		SC_NAME: sc_name,
-		SSC_NAME: site.COUNTY,
+		SCC_NAME: site.COUNTY,
 		P_NAME: p_name,
 		PROVINCE: getProvinceId(sp_name),
 		CITY: getCityId(sc_name),
@@ -117,7 +123,7 @@ module.exports = function ({
 		let list = [];
 		if (!area) {
 			result.forEach(a => {
-				let site = getSite(a.awsName);
+				let site = getSite(a.awsName, a.provinceName);
 				if (site) {
 					let sp_name = site.PROVINCE;
 					let item = hasProvince(list, sp_name);
@@ -137,7 +143,7 @@ module.exports = function ({
 		}
 		else if (1 < area.substr(2, 4) == '0000') {
 			result.filter(r => getProvinceId(r.provinceName) == area).forEach(a => {
-				let site = getSite(a.awsName);
+				let site = getSite(a.awsName, a.provinceName);
 				if (site) {
 					let sc_name = a.cityName;
 					let sp_name = site.PROVINCE;
@@ -158,7 +164,7 @@ module.exports = function ({
 		}
 		else if (area.substr(4, 2) == '00') {
 			result.filter(r => getCityId(r.cityName) == area).forEach(a => {
-				let site = getSite(a.awsName);
+				let site = getSite(a.awsName, a.provinceName);
 				if (site) {
 					let sc_name = a.cityName;
 					let sp_name = site.PROVINCE;

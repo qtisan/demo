@@ -690,7 +690,7 @@
     "CITY": "县"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "丰镇",
     "AREA": 35,
     "PROID": 150000,
@@ -705,7 +705,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "丰镇",
     "AREA": 35,
     "PROID": 150000,
@@ -1020,7 +1020,7 @@
     "CITY": "锦州市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "乌审",
     "AREA": 4,
     "PROID": 150000,
@@ -1035,7 +1035,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "乌审",
     "AREA": 4,
     "PROID": 150000,
@@ -1080,7 +1080,7 @@
     "CITY": "贵阳市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "乌拉特前",
     "AREA": 1.86,
     "PROID": 150000,
@@ -1095,7 +1095,7 @@
     "CITY": "巴彦淖尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "乌拉特前",
     "AREA": 1.86,
     "PROID": 150000,
@@ -1830,7 +1830,7 @@
     "CITY": "南充市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "伊金霍洛",
     "AREA": 3.7,
     "PROID": 150000,
@@ -1845,7 +1845,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "伊金霍洛",
     "AREA": 3.7,
     "PROID": 150000,
@@ -2340,7 +2340,7 @@
     "CITY": "齐齐哈尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "克什克腾",
     "AREA": 33.33,
     "PROID": 150000,
@@ -2355,7 +2355,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "克什克腾",
     "AREA": 33.33,
     "PROID": 150000,
@@ -2640,7 +2640,7 @@
     "CITY": "吕梁市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "兴和",
     "AREA": 43.52,
     "PROID": 150000,
@@ -2655,7 +2655,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "兴和",
     "AREA": 43.52,
     "PROID": 150000,
@@ -2850,7 +2850,7 @@
     "CITY": "长春市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "准格尔",
     "AREA": 8.83,
     "PROID": 150000,
@@ -2865,7 +2865,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "准格尔",
     "AREA": 8.83,
     "PROID": 150000,
@@ -2880,7 +2880,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "凉城",
     "AREA": 30.18,
     "PROID": 150000,
@@ -2895,7 +2895,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "凉城",
     "AREA": 30.18,
     "PROID": 150000,
@@ -3390,7 +3390,7 @@
     "CITY": "七台河市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "化德",
     "AREA": 30,
     "PROID": 150000,
@@ -3405,7 +3405,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "化德",
     "AREA": 30,
     "PROID": 150000,
@@ -3750,7 +3750,7 @@
     "CITY": "甘南藏族自治州"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "卓资",
     "AREA": 23.5,
     "PROID": 150000,
@@ -3765,7 +3765,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "卓资",
     "AREA": 23.5,
     "PROID": 150000,
@@ -4800,7 +4800,7 @@
     "CITY": "临夏回族自治州"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "和林格尔",
     "AREA": 24.83,
     "PROID": 150000,
@@ -4815,7 +4815,7 @@
     "CITY": "呼和浩特市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "和林格尔",
     "AREA": 24.83,
     "PROID": 150000,
@@ -4980,7 +4980,7 @@
     "CITY": "商洛市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "商都",
     "AREA": 45,
     "PROID": 150000,
@@ -4995,7 +4995,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "商都",
     "AREA": 45,
     "PROID": 150000,
@@ -5010,7 +5010,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "喀喇沁",
     "AREA": 6.87,
     "PROID": 150000,
@@ -5025,7 +5025,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "喀喇沁",
     "AREA": 6.87,
     "PROID": 150000,
@@ -5040,7 +5040,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "四子王",
     "AREA": 88.91,
     "PROID": 150000,
@@ -5055,7 +5055,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "四子王",
     "AREA": 88.91,
     "PROID": 150000,
@@ -5130,7 +5130,7 @@
     "CITY": "承德市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "固阳",
     "AREA": 56.83,
     "PROID": 150000,
@@ -5145,7 +5145,7 @@
     "CITY": "包头市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "固阳",
     "AREA": 56.83,
     "PROID": 150000,
@@ -5160,7 +5160,7 @@
     "CITY": "包头市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "土默特右",
     "AREA": 2.14,
     "PROID": 150000,
@@ -5175,7 +5175,7 @@
     "CITY": "包头市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "土默特右",
     "AREA": 2.14,
     "PROID": 150000,
@@ -5310,7 +5310,7 @@
     "CITY": "广州市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "多伦",
     "AREA": 23.33,
     "PROID": 150000,
@@ -5325,7 +5325,7 @@
     "CITY": "锡林郭勒盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "多伦",
     "AREA": 23.33,
     "PROID": 150000,
@@ -5760,7 +5760,7 @@
     "CITY": "大同市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "太仆寺",
     "AREA": 54.08,
     "PROID": 150000,
@@ -5775,7 +5775,7 @@
     "CITY": "锡林郭勒盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "太仆寺",
     "AREA": 54.08,
     "PROID": 150000,
@@ -5850,7 +5850,7 @@
     "CITY": "昌吉回族自治州"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "奈曼",
     "AREA": 1.54,
     "PROID": 150000,
@@ -5865,7 +5865,7 @@
     "CITY": "通辽市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "奈曼",
     "AREA": 1.54,
     "PROID": 150000,
@@ -6240,7 +6240,7 @@
     "CITY": "庆阳市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "宁城",
     "AREA": 3.73,
     "PROID": 150000,
@@ -6255,7 +6255,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "宁城",
     "AREA": 3.73,
     "PROID": 150000,
@@ -7320,7 +7320,7 @@
     "CITY": "潍坊市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "察哈尔右翼中",
     "AREA": 53,
     "PROID": 150000,
@@ -7335,7 +7335,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "察哈尔右翼中",
     "AREA": 53,
     "PROID": 150000,
@@ -7350,7 +7350,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "察哈尔右翼前",
     "AREA": 21.4,
     "PROID": 150000,
@@ -7365,7 +7365,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "察哈尔右翼前",
     "AREA": 21.4,
     "PROID": 150000,
@@ -7380,7 +7380,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "察哈尔右翼后",
     "AREA": 35,
     "PROID": 150000,
@@ -7395,7 +7395,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "察哈尔右翼后",
     "AREA": 35,
     "PROID": 150000,
@@ -8370,7 +8370,7 @@
     "CITY": "哈尔滨市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "巴彦淖尔",
     "AREA": 2.1,
     "PROID": 150000,
@@ -8385,7 +8385,7 @@
     "CITY": "巴彦淖尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "巴彦淖尔",
     "AREA": 2.1,
     "PROID": 150000,
@@ -8400,7 +8400,7 @@
     "CITY": "巴彦淖尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "巴林右",
     "AREA": 6.3,
     "PROID": 150000,
@@ -8415,7 +8415,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "巴林右",
     "AREA": 6.3,
     "PROID": 150000,
@@ -8430,7 +8430,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "巴林左",
     "AREA": 13.41,
     "PROID": 150000,
@@ -8445,7 +8445,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "巴林左",
     "AREA": 13.41,
     "PROID": 150000,
@@ -10590,7 +10590,7 @@
     "CITY": "十堰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "扎兰屯",
     "AREA": 18.33,
     "PROID": 150000,
@@ -10605,7 +10605,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "扎兰屯",
     "AREA": 18.33,
     "PROID": 150000,
@@ -10620,7 +10620,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "扎赉特",
     "AREA": 2.45,
     "PROID": 150000,
@@ -10635,7 +10635,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "扎赉特",
     "AREA": 2.45,
     "PROID": 150000,
@@ -10650,7 +10650,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "扎鲁特",
     "AREA": 1,
     "PROID": 150000,
@@ -10665,7 +10665,7 @@
     "CITY": "通辽市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "扎鲁特",
     "AREA": 1,
     "PROID": 150000,
@@ -10680,7 +10680,7 @@
     "CITY": "通辽市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "托克托",
     "AREA": 1.28,
     "PROID": 150000,
@@ -10695,7 +10695,7 @@
     "CITY": "呼和浩特市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "托克托",
     "AREA": 1.28,
     "PROID": 150000,
@@ -10830,7 +10830,7 @@
     "CITY": "南平市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "敖汉",
     "AREA": 5.92,
     "PROID": 150000,
@@ -10845,7 +10845,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "敖汉",
     "AREA": 5.92,
     "PROID": 150000,
@@ -11970,7 +11970,7 @@
     "CITY": "本溪市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "杭锦",
     "AREA": 3.17,
     "PROID": 150000,
@@ -11985,7 +11985,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "杭锦",
     "AREA": 3.17,
     "PROID": 150000,
@@ -12000,7 +12000,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "松山",
     "AREA": 10.47,
     "PROID": 150000,
@@ -12015,7 +12015,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "松山",
     "AREA": 10.47,
     "PROID": 150000,
@@ -12120,7 +12120,7 @@
     "CITY": "大庆市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "林西",
     "AREA": 10.02,
     "PROID": 150000,
@@ -12135,7 +12135,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "林西",
     "AREA": 10.02,
     "PROID": 150000,
@@ -12660,7 +12660,7 @@
     "CITY": "庆阳市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "正蓝",
     "AREA": 9.5,
     "PROID": 150000,
@@ -12675,7 +12675,7 @@
     "CITY": "锡林郭勒盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "正蓝",
     "AREA": 9.5,
     "PROID": 150000,
@@ -12690,7 +12690,7 @@
     "CITY": "锡林郭勒盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "正镶白",
     "AREA": 6.13,
     "PROID": 150000,
@@ -12705,7 +12705,7 @@
     "CITY": "锡林郭勒盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "正镶白",
     "AREA": 6.13,
     "PROID": 150000,
@@ -12840,7 +12840,7 @@
     "CITY": "天水市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "武川",
     "AREA": 57.6,
     "PROID": 150000,
@@ -12855,7 +12855,7 @@
     "CITY": "呼和浩特市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "武川",
     "AREA": 57.6,
     "PROID": 150000,
@@ -14430,7 +14430,7 @@
     "CITY": "南通市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "海拉尔",
     "AREA": 11.59,
     "PROID": 150000,
@@ -14445,7 +14445,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "海拉尔",
     "AREA": 11.59,
     "PROID": 150000,
@@ -14700,7 +14700,7 @@
     "CITY": "天水市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "清水河",
     "AREA": 31.93,
     "PROID": 150000,
@@ -14715,7 +14715,7 @@
     "CITY": "呼和浩特市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "清水河",
     "AREA": 31.93,
     "PROID": 150000,
@@ -15480,7 +15480,7 @@
     "CITY": "黑河市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "牙克石",
     "AREA": 21.67,
     "PROID": 150000,
@@ -15495,7 +15495,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "牙克石",
     "AREA": 21.67,
     "PROID": 150000,
@@ -16410,7 +16410,7 @@
     "CITY": "红河哈尼族彝族自治州"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "石拐",
     "AREA": 1.25,
     "PROID": 150000,
@@ -16425,7 +16425,7 @@
     "CITY": "包头市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "石拐",
     "AREA": 1.25,
     "PROID": 150000,
@@ -17040,7 +17040,7 @@
     "CITY": "重庆市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "科尔沁右翼中",
     "AREA": 1.01,
     "PROID": 150000,
@@ -17055,7 +17055,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "科尔沁右翼中",
     "AREA": 1.01,
     "PROID": 150000,
@@ -17070,7 +17070,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "科尔沁右翼前",
     "AREA": 22.6,
     "PROID": 150000,
@@ -17085,7 +17085,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "科尔沁右翼前",
     "AREA": 22.6,
     "PROID": 150000,
@@ -17250,7 +17250,7 @@
     "CITY": "牡丹江市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "突泉",
     "AREA": 4.92,
     "PROID": 150000,
@@ -17265,7 +17265,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "突泉",
     "AREA": 4.92,
     "PROID": 150000,
@@ -18030,7 +18030,7 @@
     "CITY": "黔南布依族苗族自治州"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "翁牛特",
     "AREA": 16.72,
     "PROID": 150000,
@@ -18045,7 +18045,7 @@
     "CITY": "赤峰市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "翁牛特",
     "AREA": 16.72,
     "PROID": 150000,
@@ -18540,7 +18540,7 @@
     "CITY": "雅安市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "莫力达瓦",
     "AREA": 16.1,
     "PROID": 150000,
@@ -18555,7 +18555,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "莫力达瓦",
     "AREA": 16.1,
     "PROID": 150000,
@@ -19530,7 +19530,7 @@
     "CITY": "益阳市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "赛罕",
     "AREA": 1.5,
     "PROID": 150000,
@@ -19545,7 +19545,7 @@
     "CITY": "呼和浩特市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "赛罕",
     "AREA": 1.5,
     "PROID": 150000,
@@ -19770,7 +19770,7 @@
     "CITY": "辽阳市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "达尔罕茂明安联合",
     "AREA": 41.2,
     "PROID": 150000,
@@ -19785,7 +19785,7 @@
     "CITY": "包头市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "达尔罕茂明安联合",
     "AREA": 41.2,
     "PROID": 150000,
@@ -19830,7 +19830,7 @@
     "CITY": "达州市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "达拉特",
     "AREA": 9.45,
     "PROID": 150000,
@@ -19845,7 +19845,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "达拉特",
     "AREA": 9.45,
     "PROID": 150000,
@@ -20400,7 +20400,7 @@
     "CITY": "黔南布依族苗族自治州"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "鄂伦春",
     "AREA": 7.12,
     "PROID": 150000,
@@ -20415,7 +20415,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "鄂伦春",
     "AREA": 7.12,
     "PROID": 150000,
@@ -20430,7 +20430,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "鄂托克前",
     "AREA": 3,
     "PROID": 150000,
@@ -20445,7 +20445,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "鄂托克前",
     "AREA": 3,
     "PROID": 150000,
@@ -20460,7 +20460,7 @@
     "CITY": "鄂尔多斯市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "鄂温克",
     "AREA": 1.95,
     "PROID": 150000,
@@ -20475,7 +20475,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "鄂温克",
     "AREA": 1.95,
     "PROID": 150000,
@@ -21480,7 +21480,7 @@
     "CITY": "哈尔滨市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "阿尔山",
     "AREA": 4.35,
     "PROID": 150000,
@@ -21495,7 +21495,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "阿尔山",
     "AREA": 4.35,
     "PROID": 150000,
@@ -21510,7 +21510,7 @@
     "CITY": "兴安盟"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "阿荣",
     "AREA": 28.73,
     "PROID": 150000,
@@ -21525,7 +21525,7 @@
     "CITY": "呼伦贝尔市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "阿荣",
     "AREA": 28.73,
     "PROID": 150000,
@@ -21900,7 +21900,7 @@
     "CITY": "资阳市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "集宁",
     "AREA": 2.27,
     "PROID": 150000,
@@ -21915,7 +21915,7 @@
     "CITY": "乌兰察布市"
   },
   {
-    "PROVINCE": "内蒙古",
+    "PROVINCE": "内蒙古自治区",
     "COUNTY": "集宁",
     "AREA": 2.27,
     "PROID": 150000,

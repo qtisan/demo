@@ -23,7 +23,7 @@ function getConfigFromJSON() {
 	}
 }
 
-const config = getConfigFromJSON();
+let config = getConfigFromJSON();
 
 module.exports = {
 
@@ -37,7 +37,8 @@ module.exports = {
 	},
 
 	reload: (name) => {
-		return getConfigFromJSON()[name];
+		config = getConfigFromJSON();
+		return config[name];
 	}
 
 	
