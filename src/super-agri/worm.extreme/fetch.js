@@ -205,6 +205,7 @@ module.exports = function ({
 			n.MLS_YCTS = Number.parseInt(n.MLS_YCTS);
 			n.CROP = Number.parseInt(n.CROP);
 		});
+		list.sort((a, b) => a.MAXPESTICIDE > b.MAXPESTICIDE ? 1 : -1);
 		callback(null, list);
 		// writeFileSync(join(__dirname, './list.json'), JSON.stringify(list));
 	}
