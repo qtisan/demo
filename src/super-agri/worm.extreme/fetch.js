@@ -53,7 +53,7 @@ function getSite(awsName) {
 	return sites.find(s => awsName.indexOf(s.COUNTY) != -1);
 }
 function getProvinceId(name) {
-	let r = name ? sites.find(s => name.indexOf(s.PROVINCE) != -1): '北京';
+	let r = name ? sites.find(s => s.PROVINCE.indexOf(name) != -1): '北京';
 	return r ? r.PROID : 0;
 }
 function getCityId(name) {
