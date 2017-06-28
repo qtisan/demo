@@ -119,7 +119,7 @@ module.exports = function ({
 			result.forEach(a => {
 				let site = getSite(a.awsName);
 				if (site) {
-					let sp_name = a.provinceName;
+					let sp_name = site.PROVINCE;
 					let item = hasProvince(list, sp_name);
 					let size = site.AREA;
 					let [min, max] = genMinMax(size, a.infectNumber, pesticide, pest, crop);
@@ -140,7 +140,7 @@ module.exports = function ({
 				let site = getSite(a.awsName);
 				if (site) {
 					let sc_name = a.cityName;
-					let sp_name = a.provinceName;
+					let sp_name = site.PROVINCE;
 					let item = hasCity(list, sc_name);
 					let size = site.AREA;
 					let [min, max] = genMinMax(size, a.infectNumber, pesticide, pest, crop);
@@ -161,7 +161,7 @@ module.exports = function ({
 				let site = getSite(a.awsName);
 				if (site) {
 					let sc_name = a.cityName;
-					let sp_name = a.provinceName;
+					let sp_name = site.PROVINCE;
 					let size = site.AREA;
 					let [min, max] = genMinMax(size, a.infectNumber, pesticide, pest, crop);
 					list.push(defaults({sp_name, sc_name, max, min, site}, {pest, rgmx, p_name, c_name, crop, dates}));
@@ -169,7 +169,10 @@ module.exports = function ({
 			});
 		}
 		list.forEach(n => {
-			n.TOTALSIZE = n.TOTALSIZE.toFixed(2);
+			n.TOTALSIZE = Number.parseFloat(n.TOTALSIZE.toFixed(2));
+			n.PEST = Number.parseInt(n.PEST);
+			n.MLS_YCTS = Number.parseInt(n.MLS_YCTS);
+			n.CROP = Number.parseInt(n.CROP);
 		});
 		callback(null, list);
 		// writeFileSync(join(__dirname, './list.json'), JSON.stringify(list));
