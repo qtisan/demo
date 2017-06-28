@@ -15,7 +15,7 @@
     "superagent": "^3.5.2"
   },
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "node src/super-agri/test/server.js"
   },
   "author": {
     "name": "lennon",

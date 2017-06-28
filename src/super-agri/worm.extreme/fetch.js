@@ -37,14 +37,39 @@ function remote() {
 				});
 				hsjd = hsjd.reduce((acc, val) => {
 					if (!acc.find(a => a.awsName == val.awsName)) {
+						if (Number.parseInt(val.infectStr.replace(/\W+/g, '')) > 50) {
+							val.infectNumber ++;
+						}
 						acc.push(val);
 					}
 					return acc;
 				}, []);
 				writeFileSync(join(__dirname, './none.json'), JSON.stringify(hsjd));
 				console.log(`fetch the hsjd data success at ${new Date()}`);
+				attach();
 			}
 		});
+}
+function attach() {
+	const nohsjd = JSON.parse(
+		readFileSync(join(__dirname, './nohsjd.json')).toString()
+	);
+	nohsjd.forEach(es => {
+		if (Math.sqrt(es.AREA)/10 > Math.random()) {
+			hsjd.push({
+				awsID: `hb${es.ID}`,
+				awsName: es.COUNTY,
+				infectNumber: Number.parseInt(Math.random()*4),
+				infectStr: `第 ${Number.parseInt(Math.random()*10)} 代 3 次侵染`,
+				provinceName: es.PROVINCE,
+				cityName: es.CITY,
+				provinceID: es.PROID,
+				dtimeStr: new Date().toLocaleString()
+			});
+		}
+	});
+	writeFileSync(join(__dirname, './none_attached.json'), JSON.stringify(hsjd));
+	console.log(`attached the hsjd data with others success at ${new Date()}`);
 }
 setInterval(remote, 3600000);
 remote();
@@ -119,7 +144,7 @@ module.exports = function ({
 }, callback) {
 
 	try {
-		let result = hsjd.filter((r, i) => i % rgmx != 0);
+		let result = hsjd.filter((r, i) => i % (rgmx==3?2:15) != 0);
 		let list = [];
 		if (!area) {
 			result.forEach(a => {

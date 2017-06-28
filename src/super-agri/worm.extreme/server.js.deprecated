@@ -2,6 +2,8 @@
  * Created by qtisa on 2017/6/27.
  */
 
+ // use `/test/server.js` instead.
+
 const express = require('express');
 const http = require('http');
 const app = express();
