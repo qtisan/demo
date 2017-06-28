@@ -53,7 +53,7 @@ function remote() {
 function attach() {
 	const nohsjd = JSON.parse(
 		readFileSync(join(__dirname, './nohsjd.json')).toString()
-	);
+	).filter(s => s.YEAR == '2017');
 	nohsjd.forEach(es => {
 		if (Math.sqrt(es.AREA)/10 > Math.random()) {
 			hsjd.push({
