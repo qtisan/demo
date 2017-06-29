@@ -3,6 +3,7 @@
   "cache": {
     "site_infect_list": "{{__dirname}}/cache/xman/potato_late_blight/{{year}}{{month}}/{{date}}/site_infect_list.{{time}}.json",
     "site_infect_result": "{{__dirname}}/cache/xman/potato_late_blight/{{year}}{{month}}/{{date}}/site_infect_result.{{time}}.json",
+    "site_infect_result_current": "{{__dirname}}/cache/xman/potato_late_blight/site_infect_result_current.json",
     "site_weather_list": "{{__dirname}}/cache/xman/potato_late_blight/{{year}}{{month}}/{{date}}/site_weather_list.{{time}}.json",
     "site_wetness_list": "{{__dirname}}/cache/xman/potato_late_blight/{{year}}{{month}}/{{date}}/site_wetness_list.{{time}}.json",
     "site_wetness_current": "{{__dirname}}/cache/xman/potato_late_blight/{{year}}{{month}}/{{date}}/site_wetness_current.{{time}}.json",

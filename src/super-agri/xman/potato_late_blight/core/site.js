@@ -35,7 +35,7 @@ class Site extends EventEmitter {
 		return Object.assign({}, this, note[status](param));
 	}
 	ok () {
-		this.status = 'ok';
+		this.status = 'ok'; // ok, not_match, degree_0, solution_not_exist, interrupt, out_of_growth
 	}
 }
 
@@ -47,6 +47,8 @@ class SiteWetness extends Site{
 		continuous, // 湿润期持续的01字符串，符合条件为1，不符合为0
 		humid_array, // 湿润期湿度数组，与continuous相对应
 		temp_avg, // 湿润期平均湿度
+		temp_avg_today, // 今天的平均温度
+		last_time_today, // 今天的计算次数
 		start_time, // 湿润期开始时间，YYYYMMDDHHmmss
 		end_time, // 湿润期结束时间，YYYYMMDDHHmmss，未结束为''
 		last_time, // 湿润期持续小时数
@@ -56,7 +58,7 @@ class SiteWetness extends Site{
 		growth
 	}) {
 		super(site_id, site_name, current_time, solution, growth);
-		Object.assign(this, {continuous, humid_array, temp_avg, start_time, end_time, last_time, site_infect});
+		Object.assign(this, {continuous, humid_array, temp_avg, start_time, end_time, last_time, site_infect, temp_avg_today, last_time_today});
 	}
 	clone () {
 		const that = new SiteWetness(this);
@@ -114,12 +116,20 @@ class SiteWetness extends Site{
 	// 【主方法】，每小时调用时，更新当前湿润期对象数据
 	update (weather1Hour, drop) {
 		let last = this.last_time;
-		let humid = weather1Hour.humid;
+		let { humid, time, temp } = weather1Hour;
 		this.emit('wetness.computeStart', {weather1Hour, siteWetness: this});
-		this.current_time = timer.current(weather1Hour.time);
+		if (!timer.sameDay(this.current_time, time)) { // 计算平均温度
+			this.temp_avg_today = temp;
+			this.last_time_today = 1;
+		}
+		else {
+			this.last_time_today += 1;
+			this.temp_avg_today = (this.temp_avg_today * (this.last_time_today - 1) + temp) / this.last_time_today;
+		}
+		this.current_time = timer.current(time);
 		this.continuous += (humid >= this.solution.humid_bound ? '1' : '0');
 		this.humid_array = [...this.humid_array, humid];
-		this.temp_avg = ((this.temp_avg * last + weather1Hour.temp) / (last + 1)).toFixed(1);
+		this.temp_avg = ((this.temp_avg * last + temp) / (last + 1)).toFixed(1);
 		this.last_time += 1;
 		// 判断是否中断润湿期，若未中断，则计算侵染情况
 		return this.judgeInterrupt(weather1Hour, drop);
@@ -127,7 +137,7 @@ class SiteWetness extends Site{
 
 }
 
-// 侵染期类
+// 侵染类
 class SiteInfect extends Site {
 
 	constructor (siteWetness, {
@@ -141,7 +151,7 @@ class SiteInfect extends Site {
 		score_total = 0 // 当前次的总积分，【在代对象中填充时更新】
 	} = siteWetness) {
 		super(siteWetness.site_id, siteWetness.site_name, siteWetness.current_time, siteWetness.solution);
-		if (siteWetness.site_wetness) {
+		if (siteWetness.site_wetness) { // siteWetness instanceof SiteInfect
 			Object.assign(this, siteWetness);
 			this.site_wetness = Object.assign({}, siteWetness.site_wetness);
 		}
@@ -158,6 +168,7 @@ class SiteInfect extends Site {
 
 	skip (status, param) {
 		let s = super.skip(status, param);
+		s.start_time = '';
 		let sw = this.site_wetness;
 		if (sw) {
 			s.site_wetness = {
@@ -171,6 +182,11 @@ class SiteInfect extends Site {
 			};
 		}
 		return s;
+	}
+
+	infect () {
+		this.end_time = this.start_time;
+		this.ok();
 	}
 
 }

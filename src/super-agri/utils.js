@@ -41,6 +41,7 @@ function translateDatetimeFromString(dateString) {
 
 
 const writeFileSync = new Proxy(fs.writeFileSync, handleFilePathProxy(0));
+const readFileSync = new Proxy(fs.readFileSync, handleFilePathProxy(0));
 const writeFileSyncWithParams = new Proxy(fs.writeFileSync, handleFilePathProxy(0, true));
 
 
@@ -132,4 +133,4 @@ function mkdir(path) {
 }
 
 
-module.exports = { logger, timer, trigger, noop, writeFileSync, writeFileSyncWithParams, XPLBLogger };
+module.exports = { logger, timer, trigger, noop, writeFileSync, readFileSync, writeFileSyncWithParams, XPLBLogger };

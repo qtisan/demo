@@ -1,25 +1,28 @@
 
-const Random = require('mockjs').Random;
-const moment = require('moment');
-const { XPLBLogger: logger, timer } = require('../../../utils');
+const { XPLBLogger: logger, readFileSync } = require('../../../utils');
+const cache = require('../config').get('cache');
 
-const { SiteInfect, SiteInfectList } = require('../core');
+const { SiteInfectList } = require('../core');
 
-const siteList = require('./site_list');
-const count = Random.integer(1, 726);
 
 
 const getSiteInfectList = () => {
 
-	logger.start('generate-726-sites-infect-data');
+	logger.start('read-sites-infect-data-from-cache');
 
 	// TODO: fetch from redis or get data from database and recompute;
 	// =============================================================
-	const collection = [];
-
+	let collection;
+	try {
+		collection = readFileSync(cache.site_infect_result_current).sites;
+	}
+	catch (e) {
+		collection = [];
+		logger.warn(`cannot read the current infect result file from \`${cache.site_infect_result_current}\`. use empty instead.`);
+	}
 	// =============================================================
 
-	logger.end('generate-726-sites-infect-data');
+	logger.end('read-sites-infect-data-from-cache');
 	return SiteInfectList.fromData(collection);
 };
 

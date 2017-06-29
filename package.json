@@ -15,7 +15,8 @@
     "superagent": "^3.5.2"
   },
   "scripts": {
-    "test": "node src/super-agri/test/server.js"
+    "test-server": "node src/super-agri/test/server.js",
+    "xman-plb-compute": "node src/super-agri/xman/potato_late_blight/index.js"
   },
   "author": {
     "name": "lennon",

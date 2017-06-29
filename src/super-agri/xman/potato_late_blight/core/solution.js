@@ -40,34 +40,17 @@ class Solution extends EventEmitter {
 					}
 				}
 				if (degree != 0) { // 侵染严重程度不为0，即湿润期当前小时符合侵染条件
-					if (siteWetness.site_infect instanceof SiteInfect) {
-						siteInfect = siteWetness.site_infect.clone();
-						Object.assign(siteInfect, {
-							degree, current_time: siteWetness.current_time
-						});
-						Object.assign(siteInfect.site_wetness, siteWetness);
-						// logger.debug(`[!!!!]-sws:[${siteInfect.site_id}],si:${siteInfect.current_time}`);
-					}
-					else {
-						siteInfect = new SiteInfect(siteWetness, {
-							start_time: siteWetness.start_time,
-							degree
-						});
-						// logger.debug(siteInfect.current_time+'44444');
-					}
-					siteInfect.ok();
+					siteInfect = new SiteInfect(siteWetness, { degree });
+					siteInfect.infect();
 					this.emit('infect.success', {siteWetness, siteInfect, solution: this});
 				}
 				else {
 					siteInfect = siteInfect.skip('degree_0', `${temp_avg} | ${last_time}`);
-					// logger.debug(siteInfect.current_time+'22222');
 				}
-				// logger.debug(siteInfect.current_time + 'xxxxx');
 			}
 			else {
 				siteInfect = siteInfect.skip('not_match', `${temp_avg} | ${last_time}`);
 				this.emit('infect.tempAvgNotMatched', {siteWetness, last_time, temp_avg, solution: this});
-				// logger.debug(siteInfect.current_time + 'yyyyy');
 			}
 			// 侵染计算结束后的回调事件
 			this.emit('infect.computeEnd', {siteWetness, siteInfect, solution: this});
@@ -75,7 +58,6 @@ class Solution extends EventEmitter {
 		else {
 			siteInfect = siteInfect.skip('solution_not_exist', siteWetness.site_id);
 			this.emit('infect.solutionNotExist', {siteWetness, solution: this});
-			// logger.debug(siteInfect.current_time + 'zzzzz');
 		}
 		return siteInfect;
 	}

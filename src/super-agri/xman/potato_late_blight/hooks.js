@@ -85,6 +85,7 @@ module.exports = {
 		logger.info('[cache] saving the test result...');
 		resultCurrentSiteWetnessList.saveToFile(cache.site_wetness_current);
 		resultSiteInfectList.saveToFile(cache.site_infect_result);
+		resultSiteInfectList.saveToFile(cache.site_infect_result_current);
 		resultCompletedSiteWetnessList.saveToFile(cache.site_wetness_completed);
 		logger.info(`[cache] result is saved.`);
 

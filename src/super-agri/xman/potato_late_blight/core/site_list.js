@@ -5,6 +5,7 @@
 const { XPLBLogger: logger, timer, writeFileSync, writeFileSyncWithParams } = require('../../../utils');
 
 const { Site, SiteWetness, SiteInfect } = require('./site');
+const { siteInfectPredicate, siteWetnessPredicate } = require('./serialization');
 
 
 class SiteList {
@@ -73,18 +74,7 @@ class SiteWetnessList extends SiteList {
 		return new SiteWetnessList(collection);
 	}
 	static sitePredicate (site) {
-		return {
-			site_id: site.site_id,
-			site_name: site.site_name,
-			continuous: site.continuous,
-			humid_array: site.humid_array,
-			temp_avg: site.temp_avg,
-			start_time: site.start_time,
-			end_time: site.end_time,
-			last_time: site.last_time,
-			// site_infect: site.site_infect, // TODO: should clear the props
-			current_time: site.current_time
-		}
+		return siteWetnessPredicate(site);
 	}
 
 	serialize (json) {
@@ -148,34 +138,7 @@ class SiteInfectList extends SiteList{
 	}
 
 	static sitePredicate (site) {
-		let res = {
-			site_id: site.site_id,
-			site_name: site.site_name,
-			start_time: site.start_time,
-			end_time: site.end_time,
-			last_day: site.last_day,
-			period: site.period,
-			times: site.times,
-			degree: site.degree,
-			score: site.score,
-			score_total: site.score_total,
-			current_time: site.current_time,
-			status: site.status,
-			note: site.note
-		};
-		let sw = site.site_wetness;
-		if (sw) {
-			res.site_wetness = {
-				continuous: sw.continuous,
-				humid_array: sw.humid_array,
-				temp_avg: sw.temp_avg,
-				start_time: sw.start_time,
-				end_time: sw.end_time,
-				last_time: sw.last_time,
-				current_time: sw.current_time
-			};
-		}
-		return res;
+		return siteInfectPredicate(site);
 	}
 
 	refreshCurrentTime (time) {
@@ -191,8 +154,8 @@ class SiteInfectList extends SiteList{
 			const current_time = siteInfect.current_time;
 			const current_date = timer.timeToDate(current_time);
 			const lastSiteInfectPoint = this.current_site &&
-				(this.current_site.site_id == siteId ? this.current_site : this.getSite(siteId));
-			const today = timer.sameDay(current_time, this.current_time);
+				(this.current_site.site_id == siteId ? this.current_site : this.getSite(siteId)); // 获得当前计算的站点侵染信息
+			const today = timer.sameDay(current_time, this.current_time); // 计算时间与上次计算时间是否为一天，即跨天判断
 			// logger.debug(`[****]-upon:${today}-[${siteId}],si:${current_time}, this:${this.current_time}, lsi:${lastSiteInfectPoint && lastSiteInfectPoint.current.current_time}`);
 			if (!lastSiteInfectPoint) {
 				let current_site = {
